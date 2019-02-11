@@ -106,7 +106,6 @@ function onSessionsClearedFail(e) {
   console.log(e);
 }
 
-// maybe loop through session ids?
 function clearSessions() {
   let removeSessions =  browser.storage.local.remove("sessions");
   removeSessions.then(onSessionsCleared, onSessionsClearedFail)
@@ -163,7 +162,6 @@ document.addEventListener("click", async (e) => {
           addSessionToPopup(sessionName, sessionURLs)
         });
       });
-      openSessions();
     }
   }
 
