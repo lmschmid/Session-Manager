@@ -8,22 +8,27 @@ const DEFAULT_ZOOM = 1;
 
 
 async function addSessionToPopup(sessionName, sessionURLs) {
-  getSavedSessions().then((sessions) => {
     console.log("in addToPopup, urls: "+sessionURLs);
+
     let sessionsList = document.getElementById('sessions-list');
-
     let newSession = document.createDocumentFragment();
-
+    var newCard = document.createElement('div');
     let sessionLink = document.createElement('a');
+
     sessionLink.textContent = sessionName;
     sessionLink.setAttribute('href', "#");
-    sessionLink.addEventListener("click", openSession.bind(null, sessions[sessionName]));
+    sessionLink.addEventListener("click", openSession.bind(null, sessionURLs));
 
     sessionLink.classList.add('open-session');
-    newSession.appendChild(sessionLink);
 
+    newCard.className = "card";
+    newCard.innerHTML = 
+      '<div class="container">\
+       </div>';
+
+    newCard.appendChild(sessionLink);
+    newSession.appendChild(newCard);
     sessionsList.appendChild(newSession);
-  });
 }
 
 /** 
@@ -40,13 +45,22 @@ async function openSessions() {
     let sessionNames = Object.getOwnPropertyNames(sessions);
 
     for (let sessionName of sessionNames) {
+      var newCard = document.createElement('div');
       let sessionLink = document.createElement('a');
+
       sessionLink.textContent = sessionName;
       sessionLink.setAttribute('href', "#");
       sessionLink.addEventListener("click", openSession.bind(null, sessions[sessionName]));
+
+      newCard.className = "card";
+      newCard.innerHTML = 
+        '<div class="container">\
+          </div>';
+
+      newCard.appendChild(sessionLink);
       
       sessionLink.classList.add('open-session');
-      savedSessions.appendChild(sessionLink);
+      savedSessions.appendChild(newCard);
     }
 
     sessionsList.appendChild(savedSessions);

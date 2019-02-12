@@ -28,17 +28,12 @@ async function addSessionToStorage(urls, sessionName) {
 
 async function getSavedSessions() {
   return gettingStoredStatsLocal.then(results => {
-    if (!("sessions" in results)) {
-      return gettingStoredStatsSync.then(results => {
-        if (!("sessions" in results)) {
-          console.log("no sessions stored")
-          return {};
-        }
-        return results["sessions"];
-      });
-    }
-    return results["sessions"];
-  });
+      if (!("sessions" in results)) {
+        console.log("no sessions stored")
+        return {};
+      }
+      return results["sessions"];
+    });
 }
 
 function clearSessions() {
