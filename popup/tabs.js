@@ -1,4 +1,4 @@
-import {gettingStoredStats, addSessionToStorage, getSavedSessions, clearSessions} from "../logic/storeTabs.js"; 
+import {addSessionToStorage, getSavedSessions, clearSessions} from "../logic/sessionStorage.js"; 
 
 // Zoom constants. Define Max, Min, increment and default values
 const ZOOM_INCREMENT = 0.2;

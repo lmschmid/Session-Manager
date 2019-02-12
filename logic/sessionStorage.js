@@ -1,14 +1,15 @@
-export {gettingStoredStats};
+export {gettingStoredStatsLocal};
 export {addSessionToStorage};
 export {getSavedSessions};
 export {clearSessions};
 
-var gettingStoredStats = browser.storage.local.get();
+var gettingStoredStatsLocal = browser.storage.local.get();
+var gettingStoredStatsSync = browser.storage.sync.get();
 
 async function addSessionToStorage(urls, sessionName) {
   // Load existent stats with the storage API.
   console.log("in addToStorage, urls: "+urls)
-  return gettingStoredStats.then(results => {
+  return gettingStoredStatsLocal.then(results => {
       // Initialize the saved stats if not yet initialized.
       if (!("sessions" in results)) {
         results = {
@@ -18,24 +19,34 @@ async function addSessionToStorage(urls, sessionName) {
       
       results["sessions"][sessionName] = urls;
       console.log(results);
+
       // Persist the updated stats.
       browser.storage.local.set(results);
+      browser.storage.sync.set(results);
   }).then(() => {return urls;});
 }
 
 async function getSavedSessions() {
-  return gettingStoredStats.then(results => {
+  return gettingStoredStatsLocal.then(results => {
     if (!("sessions" in results)) {
-      console.log("no sessions stored")
-      return {};
+      return gettingStoredStatsSync.then(results => {
+        if (!("sessions" in results)) {
+          console.log("no sessions stored")
+          return {};
+        }
+        return results["sessions"];
+      });
     }
     return results["sessions"];
   });
 }
 
 function clearSessions() {
-  let removeSessions =  browser.storage.local.remove("sessions");
-  removeSessions.then(onSessionsCleared, onSessionsClearedFail)
+  let removeSessionsLocal =  browser.storage.local.remove("sessions");
+  let removeSessionsSync =  browser.storage.sync.remove("sessions");
+
+  removeSessionsLocal.then(onSessionsCleared, onSessionsClearedFail);
+  removeSessionsSync.then(onSessionsCleared, onSessionsClearedFail);
 }
 
 function onSessionsCleared() {
