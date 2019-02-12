@@ -14,6 +14,14 @@ async function addSessionToPopup(sessionName, sessionURLs) {
     let newSession = document.createDocumentFragment();
     var newCard = document.createElement('div');
     let sessionLink = document.createElement('a');
+    let listButton = document.createElement('input');
+
+    listButton.className = 'list-button';
+    listButton.type = "image";
+    listButton.src = "/icons/list-20.png";
+    // listButton.onclick = browser.tabs.create({
+    //   url:"/listview/listview.html"
+    // });
 
     sessionLink.textContent = sessionName;
     sessionLink.setAttribute('href', "#");
@@ -27,6 +35,7 @@ async function addSessionToPopup(sessionName, sessionURLs) {
        </div>';
 
     newCard.appendChild(sessionLink);
+    // newCard.appendChild(listButton);
     newSession.appendChild(newCard);
     sessionsList.appendChild(newSession);
 }

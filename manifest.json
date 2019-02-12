@@ -21,6 +21,12 @@
       "default_title": "ProTabs",
       "default_popup": "popup/tabs.html"
     },
+    "content_scripts": [
+      {
+        "matches": "/listview/listview.html",
+        "js": ["/listview/listview.js"]
+      }
+    ],
     "description": "Manage and restore sessions easily via list or browser.",
     "manifest_version": 2,
     "name": "ProTabs",

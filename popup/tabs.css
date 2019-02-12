@@ -5,6 +5,8 @@ html, body {
   a {
     margin: 10px;
     display: inline-block;
+    padding-left: 10px;
+    padding-bottom: 10px;
   }
   
   .card {
@@ -41,4 +43,10 @@ html, body {
   
   .panel {
     margin: 5px;
+  }
+
+  .list-button {
+    display: inline-block;
+    position: absolute;
+    right: 5px;
   }
