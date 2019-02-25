@@ -6,7 +6,7 @@ export {clearSessions};
 var gettingStoredStatsLocal = browser.storage.local.get();
 var gettingStoredStatsSync = browser.storage.sync.get();
 
-async function addSessionToStorage(urls, sessionName) {
+function addSessionToStorage(urls, sessionName) {
   // Load existent stats with the storage API.
   console.log("in addToStorage, urls: "+urls)
   return gettingStoredStatsLocal.then(results => {
@@ -21,12 +21,11 @@ async function addSessionToStorage(urls, sessionName) {
       console.log(results);
 
       // Persist the updated stats.
-      browser.storage.local.set(results);
-      browser.storage.sync.set(results);
+      browser.storage.local.set(results) 
   }).then(() => {return urls;});
 }
 
-async function getSavedSessions() {
+function getSavedSessions() {
   return gettingStoredStatsLocal.then(results => {
       if (!("sessions" in results)) {
         console.log("no sessions stored")

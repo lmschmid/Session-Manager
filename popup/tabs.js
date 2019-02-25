@@ -6,8 +6,13 @@ const MAX_ZOOM = 3;
 const MIN_ZOOM = 0.3;
 const DEFAULT_ZOOM = 1;
 
+function openListView() {
+  browser.tabs.create({
+    url:"/listview/listview.html"
+  })
+}
 
-async function addSessionToPopup(sessionName, sessionURLs) {
+function addSessionToPopup(sessionName, sessionURLs) {
     console.log("in addToPopup, urls: "+sessionURLs);
 
     let sessionsList = document.getElementById('sessions-list');
@@ -19,23 +24,19 @@ async function addSessionToPopup(sessionName, sessionURLs) {
     listButton.className = 'list-button';
     listButton.type = "image";
     listButton.src = "/icons/list-20.png";
-    // listButton.onclick = browser.tabs.create({
-    //   url:"/listview/listview.html"
-    // });
+    listButton.addEventListener("click", openListView.bind(null));
 
     sessionLink.textContent = sessionName;
     sessionLink.setAttribute('href', "#");
     sessionLink.addEventListener("click", openSession.bind(null, sessionURLs));
 
-    sessionLink.classList.add('open-session');
-
     newCard.className = "card";
     newCard.innerHTML = 
-      '<div class="container">\
-       </div>';
+      '<div class="container"></div>';
 
     newCard.appendChild(sessionLink);
-    // newCard.appendChild(listButton);
+    newCard.appendChild(listButton);
+    console.log("newCard html: "+newCard.innerHTML);  
     newSession.appendChild(newCard);
     sessionsList.appendChild(newSession);
 }
@@ -43,9 +44,10 @@ async function addSessionToPopup(sessionName, sessionURLs) {
 /** 
  * retrieve past session and add links to them
  */
-async function openSessions() {
+function openSessions() {
   console.log("in open sessions");
   getSavedSessions().then((sessions) => {
+    console.log("Opensessions: ", sessions);
     let sessionsList = document.getElementById('sessions-list');
     let savedSessions = document.createDocumentFragment();
 
@@ -68,7 +70,6 @@ async function openSessions() {
 
       newCard.appendChild(sessionLink);
       
-      sessionLink.classList.add('open-session');
       savedSessions.appendChild(newCard);
     }
 
