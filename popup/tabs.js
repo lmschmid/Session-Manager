@@ -12,31 +12,39 @@ function openListView() {
   })
 }
 
+function createSessionCard(sessionName, sessionURLs) {
+  var newCard = document.createElement('div');
+  let sessionLink = document.createElement('a');
+  let listButton = document.createElement('input');
+
+  listButton.className = 'list-button';
+  listButton.type = "image";
+  listButton.src = "/icons/list-20.png";
+  listButton.addEventListener("click", openListView.bind(null));
+
+  sessionLink.textContent = sessionName;
+  sessionLink.setAttribute('href', "#");
+  sessionLink.addEventListener("click", openSession.bind(null, sessionURLs));
+
+  newCard.className = "card";
+  newCard.innerHTML = 
+    '<div class="container"></div>';
+
+  newCard.appendChild(sessionLink);
+  newCard.appendChild(listButton);
+  console.log("newCard html: "+newCard.innerHTML);  
+
+  return newCard;
+}
+
 function addSessionToPopup(sessionName, sessionURLs) {
     console.log("in addToPopup, urls: "+sessionURLs);
 
     let sessionsList = document.getElementById('sessions-list');
     let newSession = document.createDocumentFragment();
-    var newCard = document.createElement('div');
-    let sessionLink = document.createElement('a');
-    let listButton = document.createElement('input');
+    
+    let newCard = createSessionCard(sessionName, sessionURLs);
 
-    listButton.className = 'list-button';
-    listButton.type = "image";
-    listButton.src = "/icons/list-20.png";
-    listButton.addEventListener("click", openListView.bind(null));
-
-    sessionLink.textContent = sessionName;
-    sessionLink.setAttribute('href', "#");
-    sessionLink.addEventListener("click", openSession.bind(null, sessionURLs));
-
-    newCard.className = "card";
-    newCard.innerHTML = 
-      '<div class="container"></div>';
-
-    newCard.appendChild(sessionLink);
-    newCard.appendChild(listButton);
-    console.log("newCard html: "+newCard.innerHTML);  
     newSession.appendChild(newCard);
     sessionsList.appendChild(newSession);
 }
@@ -56,19 +64,7 @@ function openSessions() {
     let sessionNames = Object.getOwnPropertyNames(sessions);
 
     for (let sessionName of sessionNames) {
-      var newCard = document.createElement('div');
-      let sessionLink = document.createElement('a');
-
-      sessionLink.textContent = sessionName;
-      sessionLink.setAttribute('href', "#");
-      sessionLink.addEventListener("click", openSession.bind(null, sessions[sessionName]));
-
-      newCard.className = "card";
-      newCard.innerHTML = 
-        '<div class="container">\
-          </div>';
-
-      newCard.appendChild(sessionLink);
+      let newCard = createSessionCard(sessionName, sessions[sessionName]);
       
       savedSessions.appendChild(newCard);
     }
