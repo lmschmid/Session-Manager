@@ -1,6 +1,9 @@
 html, body {
     width: 350px;
+    min-height: 500px;
+    max-height: 500px;
 }
+/* complement color: #FFDBAA */
 
 .session-link {
   margin: 10px;
@@ -32,11 +35,13 @@ transition: 0.3s;
   padding: 2px 16px;
 }
 
-.open-session {
+.sessions-list {
   padding-left: 10px;
+  overflow-y: auto;
+  height: 100%;
 }
 
-.open-session a {
+.sessions-list a {
   display: block;
 }
 
@@ -47,15 +52,22 @@ transition: 0.3s;
 .save-session {
   text-align: center;
   display: inline-block;
+  position: fixed;
+  bottom: 5px;
+  background-color: rgb(255, 255, 255);
+  width:inherit;
 }
 
 .name-input {
   margin : 5px;
   font-size: 15px;
+  border-color: #2A4F6E;
+  border-width: 1px;
 }
 
 .list-button {
-  display: inline-block;
+  position: relative;
+  float: right;
 }
 
 .save-button {
@@ -75,8 +87,9 @@ transition: 0.3s;
 }
 
 .options-menu {
-  position: relative;
   display: inline-block;
+  padding-left: 10px;
+  padding-bottom: 10px;
 }
 
 .options-content {
