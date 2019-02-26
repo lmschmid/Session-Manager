@@ -6,37 +6,75 @@ const MAX_ZOOM = 3;
 const MIN_ZOOM = 0.3;
 const DEFAULT_ZOOM = 1;
 
-function openListView() {
-  browser.tabs.create({
-    url:"/listview/listview.html"
-  })
+function handleResponse(message) {
+  console.log(`Message from the background script:  ${message.response}`);
 }
 
+function handleError(error) {
+  console.log(`Error: ${error}`);
+}
+
+/** 
+ * opens html page in browser of session
+ */
+function openListView(sessionName, sessionURLs) {
+  browser.tabs.create({
+    url:"/listview/listview.html"
+  });
+  
+  var sending = browser.runtime.sendMessage({
+    greeting: "Greeting from the content script"
+  });
+  sending.then(handleResponse, handleError);  
+}
+
+/** 
+ * creates session card given session name and associated urls
+ */
 function createSessionCard(sessionName, sessionURLs) {
   var newCard = document.createElement('div');
   let sessionLink = document.createElement('a');
+  let options = document.createElement('div');
+  let optionsContent = document.createElement('div');
+  let openInCurrentLink = document.createElement('a');
   let listButton = document.createElement('input');
+  let optionButton = document.createElement('button');
 
   listButton.className = 'list-button';
   listButton.type = "image";
   listButton.src = "/icons/list-20.png";
-  listButton.addEventListener("click", openListView.bind(null));
+  listButton.addEventListener("click", openListView.bind(null, sessionName, sessionURLs));
 
+  sessionLink.className = "session-link";
   sessionLink.textContent = sessionName;
   sessionLink.setAttribute('href', "#");
   sessionLink.addEventListener("click", openSession.bind(null, sessionURLs));
 
-  newCard.className = "card";
-  newCard.innerHTML = 
-    '<div class="container"></div>';
+  openInCurrentLink.textContent = "Add to current window";
+  openInCurrentLink.setAttribute('href', "#");
+  openInCurrentLink.addEventListener("click", openSessionInCurrent.bind(null, sessionURLs));
 
+  options.className = "options-menu";
+  optionsContent.className = "options-content";
+  optionButton.className = "options-button";
+  optionButton.textContent = "options";
+  optionsContent.appendChild(openInCurrentLink);
+  options.appendChild(optionButton);
+  options.appendChild(optionsContent);
+
+  newCard.className = "card";
   newCard.appendChild(sessionLink);
-  newCard.appendChild(listButton);
+  newCard.appendChild(options);
+  // newCard.appendChild(openInCurrentLink);
+  newCard.insertAdjacentElement('beforeend', listButton);
   console.log("newCard html: "+newCard.innerHTML);  
 
   return newCard;
 }
 
+/** 
+ * adds new session card to existing popup
+ */
 function addSessionToPopup(sessionName, sessionURLs) {
     console.log("in addToPopup, urls: "+sessionURLs);
 
@@ -50,7 +88,7 @@ function addSessionToPopup(sessionName, sessionURLs) {
 }
 
 /** 
- * retrieve past session and add links to them
+ * retrieve past sessions and add cards to popup
  */
 function openSessions() {
   console.log("in open sessions");
@@ -78,6 +116,15 @@ function openSession(urls) {
     url: urls
   };
   let creating = browser.windows.create(createData);
+}
+
+function openSessionInCurrent(urls) {
+  for (var url of urls) {
+    let createData = {
+      url: url
+    };
+    browser.tabs.create(createData);
+  }
 }
 
 function getCurrentWindowTabs() {
