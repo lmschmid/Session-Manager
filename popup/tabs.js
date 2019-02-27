@@ -6,6 +6,8 @@ const MAX_ZOOM = 3;
 const MIN_ZOOM = 0.3;
 const DEFAULT_ZOOM = 1;
 
+// **** TAB.discarded allows tab to open without loading (set to true)
+
 function handleResponse(message) {
   console.log(`Message from the background script:  ${message.response}`);
 }
@@ -37,6 +39,8 @@ function createSessionCard(sessionName, sessionURLs) {
   let options = document.createElement('div');
   let optionsContent = document.createElement('div');
   let openInCurrentLink = document.createElement('a');
+  let openInNewLink = document.createElement('a');
+  let replaceCurrentLink = document.createElement('a');
   let listButton = document.createElement('input');
   let optionButton = document.createElement('button');
 
@@ -54,11 +58,21 @@ function createSessionCard(sessionName, sessionURLs) {
   openInCurrentLink.setAttribute('href', "#");
   openInCurrentLink.addEventListener("click", openSessionInCurrent.bind(null, sessionURLs));
 
+  openInNewLink.textContent = "Open in new window";
+  openInNewLink.setAttribute('href', "#");
+  openInNewLink.addEventListener("click", openSession.bind(null, sessionURLs)); 
+
+  replaceCurrentLink.textContent = "Replace current window";
+  replaceCurrentLink.setAttribute('href', "#");
+  replaceCurrentLink.addEventListener("click", replaceCurrentWindow.bind(null, sessionURLs)); 
+
   options.className = "options-menu";
   optionsContent.className = "options-content";
   optionButton.className = "options-button";
   optionButton.textContent = "options";
   optionsContent.appendChild(openInCurrentLink);
+  optionsContent.appendChild(openInNewLink);
+  optionsContent.appendChild(replaceCurrentLink);
   options.appendChild(optionButton);
   options.appendChild(optionsContent);
 
@@ -97,6 +111,11 @@ function openSessions() {
     let sessionsList = document.getElementById('sessions-list');
     let savedSessions = document.createDocumentFragment();
 
+    // if (Object.entries(sessions).length === 0) {
+    //   sessionsList.textContent = 'Click save below to add a session';
+    //   return;
+    // }
+
     sessionsList.textContent = '';
 
     let sessionNames = Object.getOwnPropertyNames(sessions);
@@ -127,6 +146,14 @@ function openSessionInCurrent(urls) {
   }
 }
 
+function replaceCurrentWindow(urls) {
+  browser.windows.getCurrent().then((window) => {
+    console.log(typeof window,window);
+    browser.windows.remove(window.id);
+    openSession(urls);
+  });
+}
+
 function getCurrentWindowTabs() {
   return browser.tabs.query({currentWindow: true});
 }
@@ -148,6 +175,7 @@ document.addEventListener("click", async (e) => {
 
   if (e.target.id === "clear-sessions") {
     console.log("clearing sessions");
+    let sessionsList = document.getElementById('sessions-list');
     clearSessions();
   }
 
