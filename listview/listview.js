@@ -10,11 +10,11 @@ function listSessions() {
     getActiveListView().then((urls) => {
       console.log("listSessions urls: "+urls);
       for (var url in urls) {
-        console.log("link: "+urls[url]);
-        let tabLink = document.createElement('a');
-        tabLink.textContent = urls[url];
+        console.log("link: "+urls[url]["url"]);
+        let tabLink = document.createElement('li');
+        tabLink.textContent = urls[url]["title"];
         tabLink.setAttribute('href', "#");
-        tabLink.addEventListener("click", openLink.bind(null, urls[url]));
+        tabLink.addEventListener("click", openLink.bind(null, urls[url]["url"]));
         listElems.appendChild(tabLink);
       }
     });

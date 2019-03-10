@@ -120,14 +120,24 @@ function openSessions() {
 }
 
 function openSession(urls) {
+  let rawURLs = [];
+  for (var tab in urls) {
+    rawURLs.push(urls[tab]["url"]);
+    console.log(urls[tab]["url"]);
+  }
   let createData = {
-    url: urls
+    url: rawURLs
   };
   let creating = browser.windows.create(createData);
 }
 
 function openSessionInCurrent(urls) {
-  for (var url of urls) {
+  let rawURLs = [];
+  for (var tab in urls) {
+    rawURLs.push(urls[tab]["url"]);
+    console.log(urls[tab]["url"]);
+  }
+  for (var url of rawURLs) {
     let createData = {
       url: url
     };
@@ -155,7 +165,7 @@ document.addEventListener("click", async (e) => {
       var urls = [];
       for (var tab of tabs) {
         if (!(tab.url.includes("about:", 0))) {
-          urls.push(tab.url);
+          urls.push({url:tab.url, title:tab.title});
         }
       }
       return urls;
