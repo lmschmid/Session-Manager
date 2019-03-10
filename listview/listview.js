@@ -12,6 +12,7 @@ function listSessions() {
       for (var url in urls) {
         console.log("link: "+urls[url]["url"]);
         let tabLink = document.createElement('li');
+        tabLink.className = 'session-link';
         tabLink.textContent = urls[url]["title"];
         tabLink.setAttribute('href', "#");
         tabLink.addEventListener("click", openLink.bind(null, urls[url]["url"]));
