@@ -1,10 +1,26 @@
 export {gettingStoredStatsLocal};
 export {addSessionToStorage};
 export {getSavedSessions};
+export {setActiveListView};
+export {getActiveListView};
 export {clearSessions};
 
 var gettingStoredStatsLocal = browser.storage.local.get();
 var gettingStoredStatsSync = browser.storage.sync.get();
+
+function setActiveListView(urls) {
+  gettingStoredStatsLocal.then(results => {
+    results["listview"] = {};
+    results["listview"] = Array.from(urls);
+    browser.storage.local.set(results);
+  });
+}
+
+function getActiveListView() {
+  return gettingStoredStatsLocal.then(results => {
+    return results["listview"];
+  });
+}
 
 function addSessionToStorage(urls, sessionName) {
   // Load existent stats with the storage API.

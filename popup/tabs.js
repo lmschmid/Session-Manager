@@ -1,4 +1,4 @@
-import {addSessionToStorage, getSavedSessions, clearSessions} from "../logic/sessionStorage.js"; 
+import {addSessionToStorage, getSavedSessions, clearSessions, setActiveListView} from "../logic/sessionStorage.js"; 
 
 // Zoom constants. Define Max, Min, increment and default values
 const ZOOM_INCREMENT = 0.2;
@@ -8,14 +8,6 @@ const DEFAULT_ZOOM = 1;
 
 // **** TAB.discarded allows tab to open without loading (set to true)
 
-function handleResponse(message) {
-  console.log(`Message from the background script:  ${message.response}`);
-}
-
-function handleError(error) {
-  console.log(`Error: ${error}`);
-}
-
 /** 
  * opens html page in browser of session
  */
@@ -23,11 +15,8 @@ function openListView(sessionName, sessionURLs) {
   browser.tabs.create({
     url:"/listview/listview.html"
   });
-  
-  var sending = browser.runtime.sendMessage({
-    greeting: "Greeting from the content script"
-  });
-  sending.then(handleResponse, handleError);  
+
+  setActiveListView(sessionURLs);
 }
 
 /** 
@@ -81,7 +70,7 @@ function createSessionCard(sessionName, sessionURLs) {
   newCard.appendChild(options);
   // newCard.appendChild(openInCurrentLink);
   newCard.insertAdjacentElement('beforeend', listButton);
-  console.log("newCard html: "+newCard.innerHTML);  
+  // console.log("newCard html: "+newCard.innerHTML);  
 
   return newCard;
 }

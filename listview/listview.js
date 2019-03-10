@@ -1,18 +1,23 @@
+import {getActiveListView} from "../logic/sessionStorage.js"; 
+
+function openLink(url) {
+  browser.tabs.create({url:url});
+}
+
 function listSessions() {
     console.log("in listSessions");
     let listElems = document.getElementById('list-elems');
-
-    let session = document.createElement('li');
-    session.textContent = "Sessions";
-
-    listElems.appendChild(session);
+    getActiveListView().then((urls) => {
+      console.log("listSessions urls: "+urls);
+      for (var url in urls) {
+        console.log("link: "+urls[url]);
+        let tabLink = document.createElement('a');
+        tabLink.textContent = urls[url];
+        tabLink.setAttribute('href', "#");
+        tabLink.addEventListener("click", openLink.bind(null, urls[url]));
+        listElems.appendChild(tabLink);
+      }
+    });
 }
 
-function handleMessage(request, sender, sendResponse) {
-    console.log("Message from the content script: " +
-      request.greeting);
-    sendResponse({response: "Response from background script"});
-  }
-
-browser.runtime.onMessage.addListener(handleMessage);
 document.addEventListener("DOMContentLoaded", listSessions);
