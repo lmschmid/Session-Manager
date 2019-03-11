@@ -75,9 +75,7 @@ function createSessionCard(sessionName, sessionURLs) {
   newCard.appendChild(sessionLink);
   newCard.appendChild(options);
   newCard.appendChild(deleteButton);
-  // newCard.appendChild(openInCurrentLink);
   newCard.insertAdjacentElement('beforeend', listButton);
-  // console.log("newCard html: "+newCard.innerHTML);  
 
   return newCard;
 }

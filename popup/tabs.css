@@ -45,18 +45,26 @@ html, body {
 .list-button {
   position: relative;
   float: right;
+  bottom: 30px;
+  right: 7px;
 }
 
 .delete-button {
+  background-color: #2A4F6E;
+  color: white;
   position: relative;
   float: right;
+  right: 7px;
+  bottom: 0px;
+  border: none;
+  padding: 3px;
 }
 
 .options-button {
   background-color: #2A4F6E;
   color: white;
-  padding: 8px;
-  font-size: 9px;
+  padding: 7px;
+  font-size: 10px;
   border: none;
 }
 
@@ -84,6 +92,8 @@ html, body {
   font-size: 9px;
   display: block;
 }
+
+.delete-button:hover {background-color: rgb(33, 66, 94);}
 
 /* Change color of dropdown links on hover */
 .options-content a:hover {background-color: #ddd;}
