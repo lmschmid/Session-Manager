@@ -4,6 +4,8 @@ function openLink(url) {
   browser.tabs.create({url:url});
 }
 
+// pass a title with the urls to display session name on web page
+// add favIconUrl to bullets
 function listSessions() {
     console.log("in listSessions");
     let listElems = document.getElementById('list-elems');

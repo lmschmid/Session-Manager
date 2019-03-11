@@ -2,22 +2,55 @@ html, body {
     width: 350px;
 }
 
+/* Add a black background color to the top navigation bar */
+.search-div {
+    overflow: hidden;
+    background-color: #e9e9e9;
+}
+
+.search-div a {
+float: left;
+display: block;
+color: black;
+text-align: center;
+padding: 14px 16px;
+text-decoration: none;
+font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.search-div a:hover {
+background-color: #ddd;
+color: black;
+}
+
+/* Style the "active" element to highlight the current page */
+.search-div a.active {
+background-color: #2196F3;
+color: white;
+}
+
+/* Style the search box inside the navigation bar */
+.search-div input[type=text] {
+float: right;
+padding: 6px;
+border: none;
+margin-top: 8px;
+margin-right: 16px;
+font-size: 17px;
+}
+
 .list-elems {
     padding-left: 10px;
     padding-bottom: 10px;
+    padding: 20px;
 }
 
 .session-link {
-    font-size: 20px;
+    font-size: 13px;
     color: #2A4F6E;
+    margin: 2em 0;
 }
 .session-link:hover {
     color: rgb(19, 44, 65);
 }
-  
-/* a {
-    margin: 10px;
-    display: inline-block;
-    padding-left: 10px;
-    padding-bottom: 10px;
-} */

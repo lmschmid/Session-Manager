@@ -14,6 +14,7 @@ const DEFAULT_ZOOM = 1;
 function openListView(sessionName, sessionURLs) {
   browser.tabs.create({
     url:"/listview/listview.html"
+    
   });
 
   setActiveListView(sessionURLs);
