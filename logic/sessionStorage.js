@@ -1,5 +1,6 @@
 export {gettingStoredStatsLocal};
 export {addSessionToStorage};
+export {deleteSessionFromStorage};
 export {getSavedSessions};
 export {setActiveListView};
 export {getActiveListView};
@@ -19,6 +20,15 @@ function setActiveListView(urls) {
 function getActiveListView() {
   return gettingStoredStatsLocal.then(results => {
     return results["listview"];
+  });
+}
+
+function deleteSessionFromStorage(sessionName) {
+  gettingStoredStatsLocal.then(results => {
+    delete results.sessions[sessionName];
+    console.log("deleting storage");
+    console.log(results);
+    browser.storage.local.set(results);
   });
 }
 

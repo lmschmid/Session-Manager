@@ -1,4 +1,4 @@
-import {addSessionToStorage, getSavedSessions, clearSessions, setActiveListView} from "../logic/sessionStorage.js"; 
+import {addSessionToStorage, getSavedSessions, clearSessions, setActiveListView, deleteSessionFromStorage} from "../logic/sessionStorage.js"; 
 
 // Zoom constants. Define Max, Min, increment and default values
 const ZOOM_INCREMENT = 0.2;
@@ -32,11 +32,17 @@ function createSessionCard(sessionName, sessionURLs) {
   let replaceCurrentLink = document.createElement('a');
   let listButton = document.createElement('input');
   let optionButton = document.createElement('button');
+  let deleteButton = document.createElement('button');
 
   listButton.className = 'list-button';
   listButton.type = "image";
   listButton.src = "/icons/list-20.png";
   listButton.addEventListener("click", openListView.bind(null, sessionName, sessionURLs));
+
+  deleteButton.className = 'delete-button';
+  deleteButton.type = "button";
+  deleteButton.textContent = "Delete";
+  deleteButton.addEventListener("click", deleteSession.bind(null, sessionName));
 
   sessionLink.className = "session-link";
   sessionLink.textContent = sessionName;
@@ -68,6 +74,7 @@ function createSessionCard(sessionName, sessionURLs) {
   newCard.className = "card";
   newCard.appendChild(sessionLink);
   newCard.appendChild(options);
+  newCard.appendChild(deleteButton);
   // newCard.appendChild(openInCurrentLink);
   newCard.insertAdjacentElement('beforeend', listButton);
   // console.log("newCard html: "+newCard.innerHTML);  
@@ -117,6 +124,11 @@ function openSessions() {
 
     sessionsList.appendChild(savedSessions);
   });
+}
+
+function deleteSession(sessionName) {
+  deleteSessionFromStorage(sessionName);
+  openSessions();
 }
 
 function openSession(urls) {

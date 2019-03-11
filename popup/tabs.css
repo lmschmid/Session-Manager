@@ -47,6 +47,11 @@ html, body {
   float: right;
 }
 
+.delete-button {
+  position: relative;
+  float: right;
+}
+
 .options-button {
   background-color: #2A4F6E;
   color: white;
