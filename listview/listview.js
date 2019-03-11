@@ -16,8 +16,14 @@ function listSessions() {
         let tabLink = document.createElement('li');
         tabLink.className = 'session-link';
         tabLink.textContent = urls[url]["title"];
-        tabLink.setAttribute('href', "#");
-        tabLink.addEventListener("click", openLink.bind(null, urls[url]["url"]));
+
+        let tabA = document.createElement('a');
+        tabA.className = 'session-a';
+        tabA.setAttribute('href', "#");
+        tabA.addEventListener("click", openLink.bind(null, urls[url]["url"]));
+
+        tabLink.appendChild(tabA);
+
         listElems.appendChild(tabLink);
       }
     });
