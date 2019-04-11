@@ -11,15 +11,15 @@ function filterSessions(filterString) {
     console.log("filterString: "+filterString);
 
     getActiveListView().then((urls) => {
-      for (var url in urls) {
-        let title = urls[url]["title"];
-        if (title.toUpperCase().includes(filterString.toUpperCase())) {
-            console.log("title: "+title);
+        for (var url in urls) {
+            let title = urls[url]["title"];
+            if (title.toUpperCase().includes(filterString.toUpperCase())) {
+                console.log("title: "+title);
 
-            let tabLink = constructSessionLink(urls[url]["title"], urls[url]["url"]);
-            listElems.appendChild(tabLink);
+                let tabLink = constructSessionLink(urls[url]["title"], urls[url]["url"]);
+                listElems.appendChild(tabLink);
+            }
         }
-      }
     });
 }
 
