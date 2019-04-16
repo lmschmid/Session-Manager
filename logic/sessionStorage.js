@@ -62,6 +62,26 @@ function getSavedSessions() {
     });
 }
 
+function setShouldTabsLoad(shouldLoad) {
+    return gettingStoredStatsLocal.then(results => {
+        return results["settings"]["shouldLoad"];
+    });
+}
+
+function shouldTabsLoad() {
+    return gettingStoredStatsLocal.then(results => {
+        if(!("settings" in results)) {
+            results["settings"]["shouldLoad"] = false;
+
+            // Persist the updated stats.
+            browser.storage.local.set(results)
+            return false;
+        } else {
+            return results["settings"]["shouldLoad"];
+        }
+    });
+}
+
 function clearSessions() {
     let removeSessionsLocal =  browser.storage.local.remove("sessions");
     let removeSessionsSync =  browser.storage.sync.remove("sessions");
