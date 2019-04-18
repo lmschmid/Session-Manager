@@ -47,7 +47,7 @@ function addSessionToStorage(urls, sessionName) {
         
         results["sessions"][sessionName] = {};
         results["sessions"][sessionName]["urls"] = urls;
-        results["sessions"][sessionName]["createTime"] = new Date().toJSON().slice(0,10);
+        results["sessions"][sessionName]["createDate"] = new Date().toJSON().slice(0,10);
 
         // Persist the updated stats.
         browser.storage.local.set(results) 

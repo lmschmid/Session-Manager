@@ -35,6 +35,7 @@ function onError(error) {
 function createSessionCard(sessionName, session) {
     var newCard = document.createElement('div');
     let sessionLink = document.createElement('a');
+    let dateField = document.createElement('small');
     let options = document.createElement('div');
     let optionsContent = document.createElement('div');
     let openInCurrentLink = document.createElement('a');
@@ -58,6 +59,9 @@ function createSessionCard(sessionName, session) {
     sessionLink.textContent = sessionName;
     sessionLink.setAttribute('href', "#");
     sessionLink.addEventListener("click", openSession.bind(null, session["urls"]));
+
+    dateField.className = "date-field";
+    dateField.textContent = session["createDate"];
 
     openInCurrentLink.textContent = "Add to current window";
     openInCurrentLink.setAttribute('href', "#");
@@ -83,6 +87,7 @@ function createSessionCard(sessionName, session) {
 
     newCard.className = "card";
     newCard.appendChild(sessionLink);
+    newCard.appendChild(dateField);
     newCard.appendChild(options);
     newCard.appendChild(deleteButton);
     newCard.insertAdjacentElement('beforeend', listButton);
