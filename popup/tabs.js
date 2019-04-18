@@ -16,12 +16,12 @@ shouldRestoreWindow().then((val) => {shouldRestore = val;})
 /** 
  * opens html page in browser of session
  */
-function openListView(sessionName, sessionURLs) {
+function openListView(sessionName, session) {
     browser.tabs.create({
         url:"/listview/listview.html"
     });
 
-    setActiveListView(sessionURLs);
+    setActiveListView(session["urls"]);
 }
 
 function onDiscarded() {
