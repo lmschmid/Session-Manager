@@ -32,7 +32,7 @@ function onError(error) {
 /** 
  * creates session card given session name and associated urls
  */
-function createSessionCard(sessionName, sessionURLs) {
+function createSessionCard(sessionName, session) {
     var newCard = document.createElement('div');
     let sessionLink = document.createElement('a');
     let options = document.createElement('div');
@@ -47,7 +47,7 @@ function createSessionCard(sessionName, sessionURLs) {
     listButton.className = 'list-button';
     listButton.type = "image";
     listButton.src = "/icons/list-20.png";
-    listButton.addEventListener("click", openListView.bind(null, sessionName, sessionURLs));
+    listButton.addEventListener("click", openListView.bind(null, sessionName, session["urls"]));
 
     deleteButton.className = 'delete-button';
     deleteButton.type = "button";
@@ -57,19 +57,19 @@ function createSessionCard(sessionName, sessionURLs) {
     sessionLink.className = "session-link";
     sessionLink.textContent = sessionName;
     sessionLink.setAttribute('href', "#");
-    sessionLink.addEventListener("click", openSession.bind(null, sessionURLs));
+    sessionLink.addEventListener("click", openSession.bind(null, session["urls"]));
 
     openInCurrentLink.textContent = "Add to current window";
     openInCurrentLink.setAttribute('href', "#");
-    openInCurrentLink.addEventListener("click", openSessionInCurrent.bind(null, sessionURLs));
+    openInCurrentLink.addEventListener("click", openSessionInCurrent.bind(null, session["urls"]));
 
     openInNewLink.textContent = "Open in new window";
     openInNewLink.setAttribute('href', "#");
-    openInNewLink.addEventListener("click", openSession.bind(null, sessionURLs)); 
+    openInNewLink.addEventListener("click", openSession.bind(null, session["urls"])); 
 
     replaceCurrentLink.textContent = "Replace current window";
     replaceCurrentLink.setAttribute('href', "#");
-    replaceCurrentLink.addEventListener("click", replaceCurrentWindow.bind(null, sessionURLs)); 
+    replaceCurrentLink.addEventListener("click", replaceCurrentWindow.bind(null, session["urls"])); 
 
     options.className = "options-menu";
     optionsContent.className = "options-content";
@@ -93,13 +93,13 @@ function createSessionCard(sessionName, sessionURLs) {
 /** 
  * adds new session card to existing popup
  */
-function addSessionToPopup(sessionName, sessionURLs) {
-    console.log("in addToPopup, urls: "+sessionURLs);
+function addSessionToPopup(sessionName, session) {
+    console.log("in addToPopup, session: "+session);
 
     let sessionsList = document.getElementById('sessions-list');
     let newSession = document.createDocumentFragment();
     
-    let newCard = createSessionCard(sessionName, sessionURLs);
+    let newCard = createSessionCard(sessionName, session);
 
     newSession.appendChild(newCard);
     sessionsList.appendChild(newSession);
@@ -137,6 +137,7 @@ function deleteSession(sessionName) {
 function openSession(urls) {
     let rawURLs = [];
     for (var tab in urls) {
+        console.log(urls[tab]["url"]);
         rawURLs.push(urls[tab]["url"]);
     }
     let createData = {
@@ -213,8 +214,8 @@ document.addEventListener("click", async (e) => {
         else {
         document.getElementById('name-input').value = '';
         getCurrentURLs().then((sessionURLs) => {
-            addSessionToStorage(sessionURLs, sessionName).then((sessionURLs) => {
-            addSessionToPopup(sessionName, sessionURLs)
+            addSessionToStorage(sessionURLs, sessionName).then((session) => {
+                addSessionToPopup(sessionName, session)
             });
         });
         }

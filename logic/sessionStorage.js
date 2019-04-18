@@ -45,12 +45,14 @@ function addSessionToStorage(urls, sessionName) {
             };
         }
         
-        results["sessions"][sessionName] = urls;
-        console.log(results);
+        results["sessions"][sessionName] = {};
+        results["sessions"][sessionName]["urls"] = urls;
+        results["sessions"][sessionName]["createTime"] = new Date().toJSON().slice(0,10);
 
         // Persist the updated stats.
         browser.storage.local.set(results) 
-    }).then(() => {return urls;});
+        return results["sessions"][sessionName];
+    }).then((session) => {return session;console.log("addSession returing: ", session)});
 }
 
 function getSavedSessions() {
