@@ -1,4 +1,6 @@
-import {addSessionToStorage, getSavedSessions, clearSessions, setActiveListView, deleteSessionFromStorage} from "../logic/sessionStorage.js"; 
+import {addSessionToStorage, getSavedSessions, clearSessions,
+        setActiveListView, deleteSessionFromStorage, shouldTabsLoad}
+        from "../logic/sessionStorage.js"; 
 
 // Zoom constants. Define Max, Min, increment and default values
 const ZOOM_INCREMENT = 0.2;
@@ -6,7 +8,8 @@ const MAX_ZOOM = 3;
 const MIN_ZOOM = 0.3;
 const DEFAULT_ZOOM = 1;
 
-// **** TAB.discarded allows tab to open without loading (set to true)
+var shouldLoad;
+shouldTabsLoad().then((val) => {shouldLoad = val;});
 
 /** 
  * opens html page in browser of session
@@ -17,6 +20,13 @@ function openListView(sessionName, sessionURLs) {
     });
 
     setActiveListView(sessionURLs);
+}
+
+function onDiscarded() {
+    console.log(`Discarded`);
+}
+function onError(error) {
+    console.log(`Error: ${error}`);
 }
 
 /** 
@@ -98,10 +108,10 @@ function addSessionToPopup(sessionName, sessionURLs) {
 /** 
  * retrieve past sessions and add cards to popup
  */
-function openSessions() {
+function populateSessions() {
     console.log("in open sessions");
     getSavedSessions().then((sessions) => {
-        console.log("Opensessions: ", sessions);
+        console.log("populateSessions: ", sessions);
         let sessionsList = document.getElementById('sessions-list');
         let savedSessions = document.createDocumentFragment();
 
@@ -121,32 +131,35 @@ function openSessions() {
 
 function deleteSession(sessionName) {
     deleteSessionFromStorage(sessionName);
-    openSessions();
+    populateSessions();
 }
 
 function openSession(urls) {
     let rawURLs = [];
     for (var tab in urls) {
         rawURLs.push(urls[tab]["url"]);
-        console.log(urls[tab]["url"]);
     }
     let createData = {
         url: rawURLs
     };
-    let creating = browser.windows.create(createData);
+    let creating = browser.windows.create(createData).then((window) => {
+        discardTabs(window)
+    });
 }
 
 function openSessionInCurrent(urls) {
     let rawURLs = [];
     for (var tab in urls) {
         rawURLs.push(urls[tab]["url"]);
-        console.log(urls[tab]["url"]);
     }
     for (var url of rawURLs) {
         let createData = {
         url: url
         };
-        browser.tabs.create(createData);
+
+        browser.tabs.create(createData).then((tab) => {
+            browser.tabs.discard(tab.id).then(onDiscarded, onError);
+        });
     }
 }
 
@@ -162,7 +175,15 @@ function getCurrentWindowTabs() {
     return browser.tabs.query({currentWindow: true});
 }
 
-document.addEventListener("DOMContentLoaded", openSessions);
+function discardTabs(window) {
+    if (!shouldLoad) {
+        for (var tab of window.tabs) {
+            browser.tabs.discard(tab.id).then(onDiscarded, onError);
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", populateSessions);
 document.addEventListener("click", async (e) => {
 
     function getCurrentURLs() {

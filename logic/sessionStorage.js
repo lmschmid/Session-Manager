@@ -2,6 +2,8 @@ export {gettingStoredStatsLocal};
 export {addSessionToStorage};
 export {deleteSessionFromStorage};
 export {getSavedSessions};
+export {shouldTabsLoad};
+export {setShouldTabsLoad};
 export {setActiveListView};
 export {getActiveListView};
 export {clearSessions};
@@ -71,6 +73,7 @@ function setShouldTabsLoad(shouldLoad) {
 function shouldTabsLoad() {
     return gettingStoredStatsLocal.then(results => {
         if(!("settings" in results)) {
+            results["settings"] = {}
             results["settings"]["shouldLoad"] = false;
 
             // Persist the updated stats.
