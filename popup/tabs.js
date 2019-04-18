@@ -1,6 +1,7 @@
 import {addSessionToStorage, getSavedSessions, clearSessions,
-        setActiveListView, deleteSessionFromStorage, shouldTabsLoad}
+        setActiveListView, deleteSessionFromStorage}
         from "../logic/sessionStorage.js"; 
+import {shouldTabsLoad, shouldRestoreWindow} from "../logic/settings.js";
 
 // Zoom constants. Define Max, Min, increment and default values
 const ZOOM_INCREMENT = 0.2;
@@ -8,8 +9,9 @@ const MAX_ZOOM = 3;
 const MIN_ZOOM = 0.3;
 const DEFAULT_ZOOM = 1;
 
-var shouldLoad;
+var shouldLoad, shouldRestore;
 shouldTabsLoad().then((val) => {shouldLoad = val;});
+shouldRestoreWindow().then((val) => {shouldRestore = val;})
 
 /** 
  * opens html page in browser of session
@@ -48,7 +50,7 @@ function createSessionCard(sessionName, session) {
     listButton.className = 'list-button';
     listButton.type = "image";
     listButton.src = "/icons/list-20.png";
-    listButton.addEventListener("click", openListView.bind(null, sessionName, session["urls"]));
+    listButton.addEventListener("click", openListView.bind(null, sessionName, session));
 
     deleteButton.className = 'delete-button';
     deleteButton.type = "button";
@@ -58,7 +60,7 @@ function createSessionCard(sessionName, session) {
     sessionLink.className = "session-link";
     sessionLink.textContent = sessionName;
     sessionLink.setAttribute('href', "#");
-    sessionLink.addEventListener("click", openSession.bind(null, session["urls"]));
+    sessionLink.addEventListener("click", openSession.bind(null, session));
 
     dateField.className = "date-field";
     dateField.textContent = session["createDate"];
@@ -69,11 +71,11 @@ function createSessionCard(sessionName, session) {
 
     openInNewLink.textContent = "Open in new window";
     openInNewLink.setAttribute('href', "#");
-    openInNewLink.addEventListener("click", openSession.bind(null, session["urls"])); 
+    openInNewLink.addEventListener("click", openSession.bind(null, session)); 
 
     replaceCurrentLink.textContent = "Replace current window";
     replaceCurrentLink.setAttribute('href', "#");
-    replaceCurrentLink.addEventListener("click", replaceCurrentWindow.bind(null, session["urls"])); 
+    replaceCurrentLink.addEventListener("click", replaceCurrentWindow.bind(null, session)); 
 
     options.className = "options-menu";
     optionsContent.className = "options-content";
@@ -139,15 +141,24 @@ function deleteSession(sessionName) {
     populateSessions();
 }
 
-function openSession(urls) {
+function openSession(session) {
     let rawURLs = [];
-    for (var tab in urls) {
-        console.log(urls[tab]["url"]);
-        rawURLs.push(urls[tab]["url"]);
+    var createData;
+
+    for (var tab in session["urls"]) {
+        console.log(session["urls"][tab]["url"]);
+        rawURLs.push(session["urls"][tab]["url"]);
     }
-    let createData = {
-        url: rawURLs
-    };
+
+    if (shouldRestore) {
+        createData = session["windowSettings"];
+        createData["url"] = rawURLs;
+    } else {
+        createData = {
+            url: rawURLs
+        };
+    }
+
     let creating = browser.windows.create(createData).then((window) => {
         discardTabs(window)
     });
@@ -219,8 +230,10 @@ document.addEventListener("click", async (e) => {
         else {
         document.getElementById('name-input').value = '';
         getCurrentURLs().then((sessionURLs) => {
-            addSessionToStorage(sessionURLs, sessionName).then((session) => {
-                addSessionToPopup(sessionName, session)
+            browser.windows.getCurrent().then((currWindow) => {
+                addSessionToStorage(sessionURLs, sessionName, currWindow).then((session) => {
+                    addSessionToPopup(sessionName, session)
+                });
             });
         });
         }

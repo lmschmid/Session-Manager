@@ -2,8 +2,6 @@ export {gettingStoredStatsLocal};
 export {addSessionToStorage};
 export {deleteSessionFromStorage};
 export {getSavedSessions};
-export {shouldTabsLoad};
-export {setShouldTabsLoad};
 export {setActiveListView};
 export {getActiveListView};
 export {clearSessions};
@@ -34,9 +32,10 @@ function deleteSessionFromStorage(sessionName) {
     });
 }
 
-function addSessionToStorage(urls, sessionName) {
+function addSessionToStorage(urls, sessionName, window) {
     // Load existent stats with the storage API.
-    console.log("in addToStorage, urls: "+urls)
+    console.log("in addToStorage, urls: ", urls);
+    console.log("in addToStorage, window: ", window);
     return gettingStoredStatsLocal.then(results => {
         // Initialize the saved stats if not yet initialized.
         if (!("sessions" in results)) {
@@ -48,6 +47,13 @@ function addSessionToStorage(urls, sessionName) {
         results["sessions"][sessionName] = {};
         results["sessions"][sessionName]["urls"] = urls;
         results["sessions"][sessionName]["createDate"] = new Date().toJSON().slice(0,10);
+
+        results["sessions"][sessionName]["windowSettings"] = {
+            height: window.height,
+            incognito: window.incognito,
+            left: window.left,
+            width: window.width
+        }
 
         // Persist the updated stats.
         browser.storage.local.set(results) 
@@ -63,27 +69,6 @@ function getSavedSessions() {
             return {};
         }
         return results["sessions"];
-    });
-}
-
-function setShouldTabsLoad(shouldLoad) {
-    return gettingStoredStatsLocal.then(results => {
-        return results["settings"]["shouldLoad"];
-    });
-}
-
-function shouldTabsLoad() {
-    return gettingStoredStatsLocal.then(results => {
-        if(!("settings" in results)) {
-            results["settings"] = {}
-            results["settings"]["shouldLoad"] = false;
-
-            // Persist the updated stats.
-            browser.storage.local.set(results)
-            return false;
-        } else {
-            return results["settings"]["shouldLoad"];
-        }
     });
 }
 
