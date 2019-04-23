@@ -30,6 +30,7 @@ html, body {
   height: 100px;
   overflow: hidden;
   margin-block-start: 20px;
+  position: relative;
 }
 /* On mouse-over, add a deeper shadow */
 .card:hover {
@@ -67,16 +68,17 @@ html, body {
   background-color: #2A4F6E;
   color: white;
   position: absolute;
-  right: 10px;
+  right: 15px;
+  bottom: 10px;
   border: none;
   padding: 3px;
 }
 
 .options-button {
-  position: absolute;
-  left: 25px;
   background-color: #2A4F6E;
   color: white;
+  position: absolute;
+  left: 15px;
   padding: 7px;
   font-size: 10px;
   border: none;

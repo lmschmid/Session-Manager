@@ -11,7 +11,7 @@ const DEFAULT_ZOOM = 1;
 
 var shouldLoad, shouldRestore;
 shouldTabsLoad().then((val) => {shouldLoad = val;});
-shouldRestoreWindow().then((val) => {shouldRestore = val;})
+shouldRestoreWindow().then((val) => {shouldRestore = val;});
 
 /** 
  * opens html page in browser of session
