@@ -1,10 +1,8 @@
-export {gettingStoredStatsLocal};
-export {addSessionToStorage};
-export {deleteSessionFromStorage};
-export {getSavedSessions};
-export {setActiveListView};
-export {getActiveListView};
-export {clearSessions};
+import { saveAs } from "../dependencies/FileSaver.js";
+
+export {gettingStoredStatsLocal, addSessionToStorage, deleteSessionFromStorage,
+    getSavedSessions, setActiveListView, getActiveListView, clearSessions,
+    writeToLocalFile, readFromLocalFile};
 
 var gettingStoredStatsLocal = browser.storage.local.get();
 var gettingStoredStatsSync = browser.storage.sync.get();
@@ -56,9 +54,9 @@ function addSessionToStorage(urls, sessionName, window) {
         }
 
         // Persist the updated stats.
-        browser.storage.local.set(results) 
+        browser.storage.local.set(results);
         return results["sessions"][sessionName];
-    }).then((session) => {return session;console.log("addSession returing: ", session)});
+    }).then((session) => {return session;});
 }
 
 function getSavedSessions() {
@@ -88,4 +86,24 @@ function onSessionsCleared() {
 
 function onSessionsClearedFail(e) {
     console.log(e);
+}
+
+function writeToLocalFile(sessionName) {
+    gettingStoredStatsLocal.then(results => {
+        if (Object.keys(results).length === 0 &&
+             results.constructor === Object) {
+            // TODO: display some message of nothing to save
+            return;
+        }
+        var jsonString = JSON.stringify(results, null, 2);
+
+        var blob = new Blob([jsonString], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, sessionName+".json");
+    });
+}
+
+function readFromLocalFile() {
+    // var results = readFile();
+    // browser.storage.local.set(results);
+    
 }
