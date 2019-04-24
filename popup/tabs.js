@@ -1,7 +1,8 @@
-import {addSessionToStorage, getSavedSessions, clearSessions,
-        setActiveListView, deleteSessionFromStorage}
+import { addSessionToStorage, getSavedSessions, clearSessions,
+        setActiveListView, deleteSessionFromStorage, writeToLocalFile,
+        readFromLocalFile }
         from "../logic/sessionStorage.js"; 
-import {shouldTabsLoad, shouldRestoreWindow} from "../logic/settings.js";
+import { shouldTabsLoad, shouldRestoreWindow } from "../logic/settingsStorage.js";
 
 // Zoom constants. Define Max, Min, increment and default values
 const ZOOM_INCREMENT = 0.2;
@@ -14,7 +15,7 @@ shouldTabsLoad().then((val) => {shouldLoad = val;});
 shouldRestoreWindow().then((val) => {shouldRestore = val;});
 
 /** 
- * opens html page in browser of session
+ * opens html page in browser of list of tabs in session
  */
 function openListView(sessionName, session) {
     browser.tabs.create({
@@ -22,6 +23,15 @@ function openListView(sessionName, session) {
     });
 
     setActiveListView(session["urls"]);
+}
+
+/** 
+ * opens html settings page
+ */
+function openSettings() {
+    browser.tabs.create({
+        url:"/settings/settings.html"
+    });
 }
 
 function onDiscarded() {
@@ -116,7 +126,6 @@ function addSessionToPopup(sessionName, session) {
  * retrieve past sessions and add cards to popup
  */
 function populateSessions() {
-    console.log("in open sessions");
     getSavedSessions().then((sessions) => {
         console.log("populateSessions: ", sessions);
         let sessionsList = document.getElementById('sessions-list');
@@ -174,9 +183,11 @@ function openSessionInCurrent(urls) {
         url: url
         };
 
-        browser.tabs.create(createData).then((tab) => {
-            browser.tabs.discard(tab.id).then(onDiscarded, onError);
-        });
+        if (!shouldLoad) {
+            browser.tabs.create(createData).then((tab) => {
+                browser.tabs.discard(tab.id).then(onDiscarded, onError);
+            });
+        }
     }
 }
 
@@ -200,6 +211,9 @@ function discardTabs(window) {
     }
 }
 
+const settingsButton = document.getElementById("settings-button");
+settingsButton.addEventListener("click", openSettings, false);
+
 document.addEventListener("DOMContentLoaded", populateSessions);
 document.addEventListener("click", async (e) => {
 
@@ -215,13 +229,8 @@ document.addEventListener("click", async (e) => {
         });
     }
 
-    if (e.target.id === "clear-sessions") {
-        console.log("clearing sessions");
-        let sessionsList = document.getElementById('sessions-list');
-        clearSessions();
-    }
 
-    else if (e.target.id == "save-button") {
+    if (e.target.id == "save-button") {
         let sessionName = document.getElementById('name-input').value;
         console.log(sessionName);
         if (sessionName === "") {

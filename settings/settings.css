@@ -1,0 +1,11 @@
+html, body {
+    width:500px;
+}
+
+/*
+ ******* Restore Sessions *******
+ */
+ .restore-sessions {
+    color: #2A4F6E;
+    font-size: 15px;
+}

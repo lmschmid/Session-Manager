@@ -7,6 +7,20 @@ html, body {
 /* complement color: #FFDBAA */
 
 /*
+ ******* Settings button *******
+ */
+.settings-button {
+  position: absolute;
+  right: 15px;
+  top: 17px;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+.settings-button:hover {
+  transform: rotateZ(90deg);
+}
+
+/*
  ******* Sessions List *******
  */
 .sessions-list {
@@ -105,6 +119,7 @@ html, body {
   text-decoration: none;
   font-size: 9px;
   display: block;
+  z-index: 2;
 }
 
 .delete-button:hover {background-color: rgb(33, 66, 94);}
@@ -152,15 +167,6 @@ html, body {
 }
 
 .save-button:hover {background-color: rgb(33, 66, 94);}
-
-
-/*
- ******* Clear Sessions *******
- */
-.clear-sessions {
-  color: #2A4F6E;
-  font-size: 15px;
-}
 
 
 /*
