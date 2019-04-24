@@ -1,8 +1,8 @@
 import { saveAs } from "../dependencies/FileSaver.js";
 
-export {gettingStoredStatsLocal, addSessionToStorage, deleteSessionFromStorage,
+export { gettingStoredStatsLocal, addSessionToStorage, deleteSessionFromStorage,
     getSavedSessions, setActiveListView, getActiveListView, clearSessions,
-    writeToLocalFile, readFromLocalFile};
+    writeToLocalFile, readFromLocalFile };
 
 var gettingStoredStatsLocal = browser.storage.local.get();
 var gettingStoredStatsSync = browser.storage.sync.get();
