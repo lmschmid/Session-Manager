@@ -20,10 +20,16 @@ html, body {
 
 
 /*
- ******* Clear all Sessions *******
+ ******* Buttons on page *******
  */
-.clear-all-button {
+.settings-button {
     font-size: 15px;
+}
+
+.save-name-input {
+    margin : 5px;
+    font-size: 15px;
+    border-width: 1px;
 }
 
 
