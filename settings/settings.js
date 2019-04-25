@@ -39,6 +39,6 @@ document.addEventListener("click", async (e) => {
         setShouldRestoreWindow(!shouldRestore);
     }
     else if (e.target.id == "lazy-tabs") {
-        setShouldTabsLoad(!shouldLazy);
+        setShouldTabsLoad(!shouldLoad);
     }
 });
