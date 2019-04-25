@@ -170,7 +170,9 @@ function openSession(session) {
     }
 
     let creating = browser.windows.create(createData).then((window) => {
+        console.log("Before getBackgroudnPage");
         var background = browser.extension.getBackgroundPage();
+        console.log("After getBackgroundPage");
         background.discardTabs(window, shouldLoad);
     });
 }
@@ -185,11 +187,11 @@ function openSessionInCurrent(urls) {
         url: url
         };
 
-        if (!shouldLoad) {
-            browser.tabs.create(createData).then((tab) => {
+        browser.tabs.create(createData).then((tab) => {
+            if (!shouldLoad) {
                 browser.tabs.discard(tab.id).then(onDiscarded, onError);
-            });
-        }
+            }
+        });        
     }
 }
 
