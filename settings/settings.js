@@ -3,22 +3,20 @@ import { setShouldTabsLoad, setShouldRestoreWindow, shouldTabsLoad,
          shouldRestoreWindow } from "../logic/settingsStorage.js";
 
 
-var shouldLoad, shouldRestore;
-
 function populateToggleSettings() {
     let toggleWindowRestore = document.getElementById("window-settings");
     let toggleLazyTabs = document.getElementById("lazy-tabs");
 
-    shouldTabsLoad().then((val) => {shouldLoad = val;}).then(() => {
-        shouldRestoreWindow().then((val) => {shouldRestore = val;}).then(() => {
-            console.log(shouldLoad);
-            console.log(shouldRestore);
-            if (!shouldLoad) {
-                toggleLazyTabs.checked = true;
-            } else if (shouldRestore) {
-                toggleWindowRestore.checked = true;
-            }
-        });
+    shouldTabsLoad().then((shouldLoad) => {
+        if (!shouldLoad) {
+            toggleLazyTabs.checked = true;
+        }
+    });
+
+    shouldRestoreWindow().then((shouldRestore) => {
+        if (shouldRestore) {
+            toggleWindowRestore.checked = true;
+        }
     });
 }
 
@@ -36,9 +34,13 @@ document.addEventListener("click", async (e) => {
         clearSessions();
     }
     else if (e.target.id == "window-settings") {
-        setShouldRestoreWindow(!shouldRestore);
+        shouldRestoreWindow().then((shouldRestore) => {
+            setShouldRestoreWindow(!shouldRestore);
+        });
     }
     else if (e.target.id == "lazy-tabs") {
-        setShouldTabsLoad(!shouldLoad);
+        shouldTabsLoad().then((shouldLoad) => {
+            setShouldTabsLoad(!shouldLoad);
+        });
     }
 });

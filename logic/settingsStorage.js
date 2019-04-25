@@ -7,8 +7,13 @@ export {shouldRestoreWindow};
 var gettingStoredStatsLocal = browser.storage.local.get();
 
 function setShouldTabsLoad(shouldLoad) {
-    return gettingStoredStatsLocal.then(results => {
-        return results["settings"]["shouldLoad"];
+    gettingStoredStatsLocal.then(results => {
+        if(!("settings" in results)) {
+            results["settings"] = {}
+        }
+
+        results["settings"]["shouldLoad"] = shouldLoad;
+        browser.storage.local.set(results);
     });
 }
 
@@ -30,8 +35,13 @@ function shouldTabsLoad() {
 }
 
 function setShouldRestoreWindow(shouldLoad) {
-    return gettingStoredStatsLocal.then(results => {
-        return results["settings"]["shouldRestore"];
+    gettingStoredStatsLocal.then(results => {
+        if(!("settings" in results)) {
+            results["settings"] = {}
+        }
+
+        results["settings"]["shouldRestore"] = shouldLoad;
+        browser.storage.local.set(results);
     });
 }
 
