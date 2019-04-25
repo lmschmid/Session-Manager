@@ -1,4 +1,4 @@
-import {getActiveListView} from "../logic/sessionStorage.js"; 
+import { getActiveListView } from "../logic/sessionStorage.js"; 
 
 function openLink(url) {
     browser.tabs.create({url:url});
