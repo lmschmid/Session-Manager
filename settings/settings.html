@@ -7,28 +7,38 @@
     <title>Settings</title>
   </head>
 
-  <body>
-    <div class="panel">
-        <div class="panel-section panel-section-header">
-            <strong class="title">Settings</strong>
+    <body>
+        <div class="panel">
+            <div class="panel-section panel-section-header">
+                <strong class="title">Settings</strong>
+            </div>
+            <div class="panel-section-separator"></div>    
         </div>
-        <div class="panel-section-separator"></div>    
-    </div>
 
-    <div class="panel">
-        <div class="panel-section-separator"></div>
-        <p>Restore session from file (must be .json)</p> 
-        <input type="file" accept=".json" class="json-button" id="json-button">
-        <div class="panel-section-separator"></div>
-    </div>
+        <div class="panel">
+            <div class="panel-section-separator"></div>
+            <p class="toggle-title">Toggle Settings</p> 
+            <div class="panel-section-separator"></div>
+            <input type="checkbox" class="settings-box" id="lazy-tabs"> Lazy tab loading?<br>
+            <sub>Tabs opened will not load until clicked on</sub><br><br>
+            <input type="checkbox" class="settings-box" id="window-settings"> Keep window settings?<br>
+            <sub>Window settings such as size and incognito will be stored with the session</sub><br><br>
+        </div>
 
-    <div class="panel">
-        <div class="panel-section-separator"></div>
-        <p>Delete all sessions</p> 
-        <button class="clear-all-button" id="clear-all-button" type="submit" value="Submit" >Clear all</button>
-        <div class="panel-section-separator"></div>
-    </div>
+        <div class="panel">
+            <div class="panel-section-separator"></div>
+            <p>Restore session from file (must be .json)</p> 
+            <input type="file" accept=".json" class="json-button" id="json-button">
+            <div class="panel-section-separator"></div>
+        </div>
 
-    <script src="settings.js" type="module"></script>
-  </body>
+        <div class="panel">
+            <div class="panel-section-separator"></div>
+            <p>Delete all sessions</p> 
+            <button class="clear-all-button" id="clear-all-button" type="submit" value="Submit" >Clear all</button>
+            <div class="panel-section-separator"></div>
+        </div>
+
+        <script src="settings.js" type="module"></script>
+    </body>
 </html>

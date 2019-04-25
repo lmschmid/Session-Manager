@@ -2,6 +2,15 @@ html, body {
     width: 100%;
 }
 
+
+/*
+ ******* Toggle settings *******
+ */
+.toggle-title {
+    font-size: 25px;
+}
+
+
 /*
  ******* Restore Sessions *******
  */
