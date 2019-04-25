@@ -28,5 +28,8 @@
       "tabs",
       "storage"
     ],
+    "background": {
+      "scripts": ["background/background.js"]
+    },
     "version": "1.0"
   }
