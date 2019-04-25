@@ -1,11 +1,40 @@
 html, body {
-    width:500px;
+    width: 100%;
 }
 
 /*
  ******* Restore Sessions *******
  */
- .restore-sessions {
-    color: #2A4F6E;
+.json-button {
     font-size: 15px;
+}
+
+
+/*
+ ******* Clear all Sessions *******
+ */
+.clear-all-button {
+    font-size: 15px;
+}
+
+
+/*
+ ******* Page title *******
+ */
+.title {
+    font-size: 30px;
+}
+
+
+/*
+ ******* Misc *******
+ */
+.panel {
+    margin: 5px;
+}
+  
+.panel-section-header {
+    background-color: rgb(202, 202, 202);
+    color: white;
+    font-weight: 700;
 }

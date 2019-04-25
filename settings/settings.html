@@ -4,10 +4,31 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="settings.css" type="text/css"/>
+    <title>Settings</title>
   </head>
 
   <body>
-      <input type="file" accept=".json" class="restore-sessions" id="restore-sessions"> 
+    <div class="panel">
+        <div class="panel-section panel-section-header">
+            <strong class="title">Settings</strong>
+        </div>
+        <div class="panel-section-separator"></div>    
+    </div>
+
+    <div class="panel">
+        <div class="panel-section-separator"></div>
+        <p>Restore session from file (must be .json)</p> 
+        <input type="file" accept=".json" class="json-button" id="json-button">
+        <div class="panel-section-separator"></div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-section-separator"></div>
+        <p>Delete all sessions</p> 
+        <button class="clear-all-button" id="clear-all-button" type="submit" value="Submit" >Clear all</button>
+        <div class="panel-section-separator"></div>
+    </div>
+
     <script src="settings.js" type="module"></script>
   </body>
 </html>
