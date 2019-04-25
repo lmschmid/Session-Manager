@@ -1,7 +1,6 @@
 import { addSessionToStorage, getSavedSessions, clearSessions,
         setActiveListView, deleteSessionFromStorage, writeToLocalFile,
-        readFromLocalFile }
-        from "../logic/sessionStorage.js"; 
+        readFromLocalFile } from "../logic/sessionStorage.js"; 
 import { shouldTabsLoad, shouldRestoreWindow } from "../logic/settingsStorage.js";
 
 // Zoom constants. Define Max, Min, increment and default values
@@ -40,6 +39,7 @@ function onDiscarded() {
 function onError(error) {
     console.log(`Error: ${error}`);
 }
+
 
 /** 
  * creates session card given session name and associated urls
@@ -155,13 +155,14 @@ function openSession(session) {
     var createData;
 
     for (var tab in session["urls"]) {
-        console.log(session["urls"][tab]["url"]);
         rawURLs.push(session["urls"][tab]["url"]);
     }
 
     if (shouldRestore) {
         createData = session["windowSettings"];
         createData["url"] = rawURLs;
+        // bizzare error where any width >= 1270 loads as previous valid width
+        createData["width"] = (createData["width"] >= 1270 ? 1269 : createData["width"]);
     } else {
         createData = {
             url: rawURLs
@@ -169,7 +170,8 @@ function openSession(session) {
     }
 
     let creating = browser.windows.create(createData).then((window) => {
-        discardTabs(window)
+        var background = browser.extension.getBackgroundPage();
+        background.discardTabs(window, shouldLoad);
     });
 }
 
@@ -193,7 +195,6 @@ function openSessionInCurrent(urls) {
 
 function replaceCurrentWindow(urls) {
     browser.windows.getCurrent().then((window) => {
-        console.log(typeof window,window);
         browser.windows.remove(window.id);
         openSession(urls);
     });
@@ -201,14 +202,6 @@ function replaceCurrentWindow(urls) {
 
 function getCurrentWindowTabs() {
     return browser.tabs.query({currentWindow: true});
-}
-
-function discardTabs(window) {
-    if (!shouldLoad) {
-        for (var tab of window.tabs) {
-            browser.tabs.discard(tab.id).then(onDiscarded, onError);
-        }
-    }
 }
 
 const settingsButton = document.getElementById("settings-button");
