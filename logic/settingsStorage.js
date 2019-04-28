@@ -13,6 +13,9 @@ function setShouldTabsLoad(shouldLoad) {
         }
 
         results["settings"]["shouldLoad"] = shouldLoad;
+
+        delete results.sessions;
+        delete results.listview;
         browser.storage.local.set(results);
     });
 }
@@ -25,6 +28,9 @@ function shouldTabsLoad() {
 
         if(!("shouldLoad" in results["settings"])) {
             results["settings"]["shouldLoad"] = false;
+
+            delete results.sessions;
+            delete results.listview;
             browser.storage.local.set(results);
 
             return false;
@@ -41,6 +47,9 @@ function setShouldRestoreWindow(shouldLoad) {
         }
 
         results["settings"]["shouldRestore"] = shouldLoad;
+
+        delete results.sessions;
+        delete results.listview;
         browser.storage.local.set(results);
     });
 }
@@ -53,6 +62,9 @@ function shouldRestoreWindow() {
 
         if (!("shouldRestore" in results["settings"])) {
             results["settings"]["shouldRestore"] = true;
+
+            delete results.sessions;
+            delete results.listview;
             browser.storage.local.set(results);
 
             return true;

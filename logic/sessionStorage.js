@@ -11,6 +11,9 @@ function setActiveListView(urls) {
     gettingStoredStatsLocal.then(results => {
         results["listview"] = {};
         results["listview"] = Array.from(urls);
+
+        delete results.sessions;
+        delete results.settings;
         browser.storage.local.set(results);
     });
 }
@@ -26,6 +29,9 @@ function deleteSessionFromStorage(sessionName) {
         delete results.sessions[sessionName];
         console.log("deleting storage");
         console.log(results);
+
+        delete results.settings;
+        delete results.listview;
         browser.storage.local.set(results);
     });
 }
@@ -54,6 +60,8 @@ function addSessionToStorage(urls, sessionName, window) {
         }
 
         // Persist the updated stats.
+        delete results.settings;
+        delete results.listview;
         browser.storage.local.set(results);
         return results["sessions"][sessionName];
     }).then((session) => {return session;});
