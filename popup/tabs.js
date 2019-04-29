@@ -180,15 +180,13 @@ function openSession(session) {
         };
     }
 
-    let creating = browser.windows.create(createData).then((window) => {
-        var sending = browser.runtime.sendMessage({
-            discard: {
-                window: window,
-                shouldLoad: shouldLoad
-            }
-        });
-        sending.then(handleResponse, handleError);
+    var sending = browser.runtime.sendMessage({
+        openSession: {
+            createData: createData,
+            shouldLoad: shouldLoad
+        }
     });
+    sending.then(handleResponse, handleError);
 }
 
 function openSessionInCurrent(urls) {
