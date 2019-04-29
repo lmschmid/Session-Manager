@@ -33,6 +33,9 @@ function openSettings() {
     });
 }
 
+/** 
+ * For use with browser.tabs.discard
+ */
 function onDiscarded() {
     console.log(`Discarded`);
 }
@@ -40,6 +43,9 @@ function onError(error) {
     console.log(`Error: ${error}`);
 }
 
+/**
+ * For use with sending messages to background script
+ */
 function handleResponse(message) {
     if (message) {
         console.log(`Message from the background script:  ${message.response}`);
