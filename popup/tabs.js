@@ -40,6 +40,17 @@ function onError(error) {
     console.log(`Error: ${error}`);
 }
 
+function handleResponse(message) {
+    if (message) {
+        console.log(`Message from the background script:  ${message.response}`);
+    } else {
+        console.log("No response from background script");
+    }
+}
+function handleError(error) {
+    console.log(`Error: ${error}`);
+}
+  
 
 /** 
  * creates session card given session name and associated urls
@@ -170,10 +181,13 @@ function openSession(session) {
     }
 
     let creating = browser.windows.create(createData).then((window) => {
-        console.log("Before getBackgroudnPage");
-        var background = browser.extension.getBackgroundPage();
-        console.log("After getBackgroundPage");
-        background.discardTabs(window, shouldLoad);
+        var sending = browser.runtime.sendMessage({
+            discard: {
+                window: window,
+                shouldLoad: shouldLoad
+            }
+        });
+        sending.then(handleResponse, handleError);
     });
 }
 

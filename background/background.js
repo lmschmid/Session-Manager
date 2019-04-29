@@ -14,3 +14,14 @@ function discardTabs(window, shouldLoad) {
         }
     }
 }
+
+
+function handleMessage(request, sender, sendResponse) {
+    console.log("discard from background: "+request.discard.toSource());
+    // sendResponse({response: "Response from background script"});
+    if (request.discard) {
+        discardTabs(request.discard.window, request.discard.shouldLoad);
+    }
+}
+
+browser.runtime.onMessage.addListener(handleMessage);
