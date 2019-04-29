@@ -6,6 +6,16 @@ export {shouldRestoreWindow};
 
 var gettingStoredStatsLocal = browser.storage.local.get();
 
+
+function setResults(results) {
+    var sending = browser.runtime.sendMessage({
+        setResults: {
+            results: results
+        }
+    });
+    sending.then(handleResponse, handleError);
+}
+
 function setShouldTabsLoad(shouldLoad) {
     gettingStoredStatsLocal.then(results => {
         if(!("settings" in results)) {
@@ -16,7 +26,7 @@ function setShouldTabsLoad(shouldLoad) {
 
         delete results.sessions;
         delete results.listview;
-        browser.storage.local.set(results);
+        setResults(resuts);
     });
 }
 
@@ -31,7 +41,7 @@ function shouldTabsLoad() {
 
             delete results.sessions;
             delete results.listview;
-            browser.storage.local.set(results);
+            setResults(resuts);
 
             return false;
         } else {
@@ -50,7 +60,7 @@ function setShouldRestoreWindow(shouldLoad) {
 
         delete results.sessions;
         delete results.listview;
-        browser.storage.local.set(results);
+        setResults(resuts);
     });
 }
 
@@ -65,11 +75,25 @@ function shouldRestoreWindow() {
 
             delete results.sessions;
             delete results.listview;
-            browser.storage.local.set(results);
+            setResults(resuts);
 
             return true;
         } else {
             return results["settings"]["shouldRestore"];
         }
     });
+}
+
+/** 
+ * For use with sending messages to background script
+ */
+function handleResponse(message) {
+    if (message) {
+        console.log(`Message from the background script:  ${message.response}`);
+    } else {
+        console.log("No response from background script");
+    }
+}
+function handleError(error) {
+    console.log(`Error: ${error}`);
 }

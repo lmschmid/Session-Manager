@@ -7,6 +7,16 @@ export { gettingStoredStatsLocal, addSessionToStorage, deleteSessionFromStorage,
 var gettingStoredStatsLocal = browser.storage.local.get();
 var gettingStoredStatsSync = browser.storage.sync.get();
 
+
+function setResults(results) {
+    var sending = browser.runtime.sendMessage({
+        setResults: {
+            results: results
+        }
+    });
+    sending.then(handleResponse, handleError);
+}
+
 function setActiveListView(urls) {
     gettingStoredStatsLocal.then(results => {
         results["listview"] = {};
@@ -14,7 +24,7 @@ function setActiveListView(urls) {
 
         delete results.sessions;
         delete results.settings;
-        browser.storage.local.set(results);
+        setResults(results);
     });
 }
 
@@ -32,7 +42,7 @@ function deleteSessionFromStorage(sessionName) {
 
         delete results.settings;
         delete results.listview;
-        browser.storage.local.set(results);
+        setResults(results);
     });
 }
 
@@ -62,7 +72,7 @@ function addSessionToStorage(urls, sessionName, window) {
         // Persist the updated stats.
         delete results.settings;
         delete results.listview;
-        browser.storage.local.set(results);
+        setResults(results);
         return results["sessions"][sessionName];
     }).then((session) => {return session;});
 }
@@ -114,4 +124,18 @@ function readFromLocalFile() {
     // var results = readFile();
     // browser.storage.local.set(results);
     
+}
+
+/** 
+ * For use with sending messages to background script
+ */
+function handleResponse(message) {
+    if (message) {
+        console.log(`Message from the background script:  ${message.response}`);
+    } else {
+        console.log("No response from background script");
+    }
+}
+function handleError(error) {
+    console.log(`Error: ${error}`);
 }

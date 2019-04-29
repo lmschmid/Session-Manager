@@ -22,6 +22,8 @@ function handleMessage(request, sender, sendResponse) {
         .then((window) => {
             discardTabs(window, request.openSession.shouldLoad);
         });
+    } else if (request.setResults) {
+        browser.storage.local.set(request.setResults.results);
     }
 }
 
