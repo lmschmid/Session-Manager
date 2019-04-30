@@ -33,6 +33,12 @@ function openSettings() {
     });
 }
 
+function openTab(url) {
+    browser.tabs.create({
+        url:url
+    });
+}
+
 /** 
  * For use with browser.tabs.discard
  */
@@ -116,12 +122,21 @@ function createInfoSection (sessionName, session) {
     return infoSection;
 }
 
-function createListSection(session) {
+function createListSection(sessionName, session) {
     var listSection = document.createElement('div');
     listSection.className = "list-section split-right";
 
     let linkList = document.createElement('div');
     linkList.className = 'link-list';
+
+    let buttonWrapper = document.createElement('div');
+    buttonWrapper.className = 'button-wrapper';
+
+    let listButton = document.createElement('button');
+    listButton.className = 'list-button mat-button';
+    listButton.textContent = "Open list in new tab";
+    listButton.setAttribute('href', "#");
+    listButton.addEventListener("click", openListView.bind(null, sessionName, session));
 
     for (let tabInfo in session["urls"]) {
         let url = session["urls"][tabInfo]["url"];
@@ -134,6 +149,7 @@ function createListSection(session) {
 
         urlField.className = "link-title";
         urlField.textContent = title;
+        urlField.addEventListener("click", openTab.bind(null, url));
 
         if (session["urls"][tabInfo].icon) {
             let iconUrl = session["urls"][tabInfo]["icon"];
@@ -147,11 +163,15 @@ function createListSection(session) {
             icon.alt = ".";
             listElem.appendChild(icon);
         }
+
         listElem.appendChild(urlField);
         linkList.appendChild(listElem);
     }
 
+    buttonWrapper.appendChild(listButton);
+    
     listSection.appendChild(linkList);
+    listSection.appendChild(buttonWrapper);
 
     return listSection;
 }
@@ -163,11 +183,13 @@ function createSessionCard(sessionName, session) {
     var newCard = document.createElement('div');
 
     let infoSection = createInfoSection(sessionName, session);
-    let listSection = createListSection(session);
+    let listSection = createListSection(sessionName, session);
 
     newCard.className = "card";
     newCard.appendChild(infoSection);
     newCard.appendChild(listSection);
+
+    console.log(newCard.innerHTML);
 
     return newCard;
 }
