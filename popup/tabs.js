@@ -56,6 +56,29 @@ function handleResponse(message) {
 function handleError(error) {
     console.log(`Error: ${error}`);
 }
+
+function createOptionsMenu(session) {
+    let options = document.createElement('div');
+    let optionsContent = document.createElement('div');
+    let openInCurrentLink = document.createElement('a');
+    let replaceCurrentLink = document.createElement('a');
+
+    openInCurrentLink.textContent = "Add to current window";
+    openInCurrentLink.setAttribute('href', "#");
+    openInCurrentLink.addEventListener("click", openSessionInCurrent.bind(null, session["urls"]));
+
+    replaceCurrentLink.textContent = "Replace current window";
+    replaceCurrentLink.setAttribute('href', "#");
+    replaceCurrentLink.addEventListener("click", replaceCurrentWindow.bind(null, session)); 
+
+    options.className = "options-menu";
+    optionsContent.className = "options-content";
+    optionsContent.appendChild(openInCurrentLink);
+    optionsContent.appendChild(replaceCurrentLink);
+    options.appendChild(optionsContent)
+
+    return options;
+}
   
 
 function createInfoSection (sessionName, session) {
@@ -66,10 +89,7 @@ function createInfoSection (sessionName, session) {
     let dateField = document.createElement('small');
     let deleteButton = document.createElement('button');
     let openButton = document.createElement('button');
-    let options = document.createElement('div');
-    let optionsContent = document.createElement('div');
-    let openInCurrentLink = document.createElement('a');
-    let replaceCurrentLink = document.createElement('a');
+    let options = createOptionsMenu(session);
 
     nameField.className = "session-link";
     nameField.textContent = sessionName;
@@ -86,20 +106,6 @@ function createInfoSection (sessionName, session) {
     deleteButton.textContent = "Delete";
     deleteButton.setAttribute('href', "#");
     deleteButton.addEventListener("click", deleteSession.bind(null, sessionName));
-
-    openInCurrentLink.textContent = "Add to current window";
-    openInCurrentLink.setAttribute('href', "#");
-    openInCurrentLink.addEventListener("click", openSessionInCurrent.bind(null, session["urls"]));
-
-    replaceCurrentLink.textContent = "Replace current window";
-    replaceCurrentLink.setAttribute('href', "#");
-    replaceCurrentLink.addEventListener("click", replaceCurrentWindow.bind(null, session)); 
-
-    options.className = "options-menu";
-    optionsContent.className = "options-content";
-    optionsContent.appendChild(openInCurrentLink);
-    optionsContent.appendChild(replaceCurrentLink);
-    options.appendChild(optionsContent);
 
     infoSection.appendChild(nameField);
     infoSection.appendChild(dateField);
