@@ -62,7 +62,7 @@ function createInfoSection (sessionName, session) {
     var infoSection = document.createElement('div');
     infoSection.classList.add("info-section", "split");
 
-    let sessionLink = document.createElement('h2');
+    let nameField = document.createElement('h2');
     let dateField = document.createElement('small');
     let deleteButton = document.createElement('button');
     let openButton = document.createElement('button');
@@ -71,8 +71,8 @@ function createInfoSection (sessionName, session) {
     let openInCurrentLink = document.createElement('a');
     let replaceCurrentLink = document.createElement('a');
 
-    sessionLink.className = "session-link";
-    sessionLink.textContent = sessionName;
+    nameField.className = "session-link";
+    nameField.textContent = sessionName;
 
     dateField.className = "date-field";
     dateField.textContent = session["createDate"];
@@ -101,7 +101,7 @@ function createInfoSection (sessionName, session) {
     optionsContent.appendChild(replaceCurrentLink);
     options.appendChild(optionsContent);
 
-    infoSection.appendChild(sessionLink);
+    infoSection.appendChild(nameField);
     infoSection.appendChild(dateField);
     infoSection.appendChild(openButton);
     infoSection.appendChild(deleteButton);
