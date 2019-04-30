@@ -58,68 +58,95 @@ function handleError(error) {
 }
   
 
+function createInfoSection (sessionName, session) {
+    var infoSection = document.createElement('div');
+    infoSection.classList.add("info-section", "split");
+
+    let sessionLink = document.createElement('h2');
+    let dateField = document.createElement('small');
+    let deleteButton = document.createElement('button');
+    let openButton = document.createElement('button');
+    let options = document.createElement('div');
+    let optionsContent = document.createElement('div');
+    let openInCurrentLink = document.createElement('a');
+    let replaceCurrentLink = document.createElement('a');
+    let listButton = document.createElement('input');
+    let optionButton = document.createElement('button');
+    let seperator = document.createElement('div');
+
+    sessionLink.className = "session-link";
+    sessionLink.textContent = sessionName;
+
+    dateField.className = "date-field";
+    dateField.textContent = session["createDate"];
+
+    openButton.className = "open-button mat-button";
+    openButton.textContent = "Open";
+    openButton.setAttribute('href', "#");
+    openButton.addEventListener("click", openSession.bind(null, session));
+
+    deleteButton.className = "delete-button mat-button";
+    deleteButton.textContent = "Delete";
+    deleteButton.setAttribute('href', "#");
+    deleteButton.addEventListener("click", deleteSession.bind(null, sessionName));
+
+    // listButton.className = 'list-button';
+    // listButton.type = "image";
+    // listButton.src = "/icons/list-20.png";
+    // listButton.addEventListener("click", openListView.bind(null, sessionName, session));
+
+    // openInCurrentLink.textContent = "Add to current window";
+    // openInCurrentLink.setAttribute('href', "#");
+    // openInCurrentLink.addEventListener("click", openSessionInCurrent.bind(null, session["urls"]));
+
+    // replaceCurrentLink.textContent = "Replace current window";
+    // replaceCurrentLink.setAttribute('href', "#");
+    // replaceCurrentLink.addEventListener("click", replaceCurrentWindow.bind(null, session)); 
+
+    // options.className = "options-menu";
+    // optionsContent.className = "options-content";
+    // optionButton.className = "options-button";
+    // optionButton.textContent = "options";
+    // optionsContent.appendChild(openInNewLink);
+    // optionsContent.appendChild(replaceCurrentLink);
+    // options.appendChild(optionButton);
+    // options.appendChild(optionsContent);
+
+    seperator.className = "seperator";
+
+    infoSection.appendChild(sessionLink);
+    infoSection.appendChild(seperator);
+    infoSection.appendChild(dateField);
+    infoSection.appendChild(openButton);
+    infoSection.appendChild(deleteButton);
+    // infoSection.appendChild(options);
+    // infoSection.appendChild(deleteButton);
+    // infoSection.insertAdjacentElement('beforeend', listButton);
+
+    return infoSection;
+}
+
+function createListSection(session) {
+    var listSection = document.createElement('div');
+    listSection.className = "list-section split";
+
+    listSection.innerHTML = "<h2>Jane Flex</h2>";
+
+    return listSection;
+}
+
 /** 
  * creates session card given session name and associated urls
  */
 function createSessionCard(sessionName, session) {
     var newCard = document.createElement('div');
-    let sessionLink = document.createElement('a');
-    let dateField = document.createElement('small');
-    let options = document.createElement('div');
-    let optionsContent = document.createElement('div');
-    let openInCurrentLink = document.createElement('a');
-    let openInNewLink = document.createElement('a');
-    let replaceCurrentLink = document.createElement('a');
-    let listButton = document.createElement('input');
-    let optionButton = document.createElement('button');
-    let deleteButton = document.createElement('button');
 
-    listButton.className = 'list-button';
-    listButton.type = "image";
-    listButton.src = "/icons/list-20.png";
-    listButton.addEventListener("click", openListView.bind(null, sessionName, session));
-
-    deleteButton.className = 'delete-button';
-    deleteButton.type = "button";
-    deleteButton.textContent = "Delete";
-    deleteButton.addEventListener("click", deleteSession.bind(null, sessionName));
-
-    sessionLink.className = "session-link";
-    sessionLink.textContent = sessionName;
-    sessionLink.setAttribute('href', "#");
-    sessionLink.addEventListener("click", openSession.bind(null, session));
-
-    dateField.className = "date-field";
-    dateField.textContent = session["createDate"];
-
-    openInCurrentLink.textContent = "Add to current window";
-    openInCurrentLink.setAttribute('href', "#");
-    openInCurrentLink.addEventListener("click", openSessionInCurrent.bind(null, session["urls"]));
-
-    openInNewLink.textContent = "Open in new window";
-    openInNewLink.setAttribute('href', "#");
-    openInNewLink.addEventListener("click", openSession.bind(null, session)); 
-
-    replaceCurrentLink.textContent = "Replace current window";
-    replaceCurrentLink.setAttribute('href', "#");
-    replaceCurrentLink.addEventListener("click", replaceCurrentWindow.bind(null, session)); 
-
-    options.className = "options-menu";
-    optionsContent.className = "options-content";
-    optionButton.className = "options-button";
-    optionButton.textContent = "options";
-    optionsContent.appendChild(openInCurrentLink);
-    optionsContent.appendChild(openInNewLink);
-    optionsContent.appendChild(replaceCurrentLink);
-    options.appendChild(optionButton);
-    options.appendChild(optionsContent);
+    let infoSection = createInfoSection(sessionName, session);
+    let listSection = createListSection(session);
 
     newCard.className = "card";
-    newCard.appendChild(sessionLink);
-    newCard.appendChild(dateField);
-    newCard.appendChild(options);
-    newCard.appendChild(deleteButton);
-    newCard.insertAdjacentElement('beforeend', listButton);
+    newCard.appendChild(infoSection);
+    newCard.appendChild(listSection);
 
     return newCard;
 }
@@ -131,12 +158,9 @@ function addSessionToPopup(sessionName, session) {
     console.log("in addToPopup, session: "+session);
 
     let sessionsList = document.getElementById('sessions-list');
-    let newSession = document.createDocumentFragment();
-    
     let newCard = createSessionCard(sessionName, session);
 
-    newSession.appendChild(newCard);
-    sessionsList.appendChild(newSession);
+    sessionsList.appendChild(newCard);
 }
 
 /** 

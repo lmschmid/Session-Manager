@@ -33,6 +33,55 @@ html, body {
   display: block;
 }
 
+.mat-button {
+  display: block;
+  padding: 5;
+
+  overflow: hidden;
+
+  border-width: 0;
+  outline: none;
+  border-radius: 2px;
+  transition: background-color .3s;
+}
+.mat-button:hover, .mat-button:focus {
+  background-color: #99a19d;
+}
+
+.mat-button > * {
+  position: relative;
+}
+
+
+.mat-button:before {
+  content: "";
+  
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  
+  display: block;
+  width: 0;
+  padding-top: 0;
+    
+  border-radius: 100%;
+  
+  background-color: rgba(236, 240, 241, .3);
+  
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.mat-button:active:before {
+  width: 120%;
+  padding-top: 120%;
+  
+  transition: width .2s ease-out, padding-top .2s ease-out;
+}
+
 
 /*
  ******* Card *******
@@ -41,7 +90,7 @@ html, body {
   /* Add shadows to create the "card" effect */
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
-  height: 100px;
+  height: 200px;
   margin-block-start: 20px;
   position: relative;
 }
@@ -50,24 +99,60 @@ html, body {
   box-shadow: 0 14px 22px 0 rgba(0,0,0,0.2);
 }
 
-.session-link {
-  margin: 10px;
-  display: inline-block;
-  padding-left: 10px;
-  padding-bottom: 10px;
-  font-size: 15px;
-  color: #2A4F6E;
+.split {
+  height: 100%;
+  width: 39%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
 }
-.session-link:hover {
-  color: rgb(79, 161, 233);;
+
+.seperator {
+  border-right:1px solid #000;
+  height:100%;
+}
+
+.info-section {
+  position: absolute;
+  left: 0;
+}
+.list-section {
+  position: absolute;
+  right: 0;
+}
+
+.session-link {
+  position: absolute;
+  top: -8px;
+  margin: 20px;
+  font-size: 20px;
+  color: #2A4F6E;
+  text-overflow: hidden;
+  line-height: 20px;
 }
 
 .date-field {
-  position: relative;
-  left: 120px;
-  bottom: 37px;
+  position: absolute;
+  top: 40px;
+  margin: 20px;
   font-size: 10px;
   color: #2A4F6E;
+}
+
+.open-button {
+  position: absolute;
+  bottom: 3px;
+  left: 3px;
+  font-size: 12px;
+}
+
+.delete-button {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  font-size: 12px;
 }
 
 .list-button {
@@ -75,16 +160,6 @@ html, body {
   float: right;
   bottom: 30px;
   right: 7px;
-}
-
-.delete-button {
-  background-color: #2A4F6E;
-  color: white;
-  position: absolute;
-  right: 15px;
-  bottom: 10px;
-  border: none;
-  padding: 3px;
 }
 
 .options-button {
@@ -119,8 +194,6 @@ html, body {
   font-size: 9px;
   display: block;
 }
-
-.delete-button:hover {background-color: rgb(33, 66, 94);}
 
 /* Change color of dropdown links on hover */
 .options-content a:hover {background-color: #ddd;}
