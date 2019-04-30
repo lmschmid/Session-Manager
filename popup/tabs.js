@@ -129,9 +129,6 @@ function createListSection(sessionName, session) {
     let linkList = document.createElement('div');
     linkList.className = 'link-list';
 
-    let buttonWrapper = document.createElement('div');
-    buttonWrapper.className = 'button-wrapper';
-
     let listButton = document.createElement('button');
     listButton.className = 'list-button mat-button';
     listButton.textContent = "Open list in new tab";
@@ -167,11 +164,9 @@ function createListSection(sessionName, session) {
         listElem.appendChild(urlField);
         linkList.appendChild(listElem);
     }
-
-    buttonWrapper.appendChild(listButton);
     
     listSection.appendChild(linkList);
-    listSection.appendChild(buttonWrapper);
+    listSection.appendChild(listButton);
 
     return listSection;
 }
