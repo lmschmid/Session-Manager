@@ -24,7 +24,7 @@ html, body {
  ******* Sessions List *******
  */
 .sessions-list {
-  padding-left: 10px;
+  padding-left: 5px;
   overflow: scroll;
   height: 400px;
   z-index: 1;
@@ -100,15 +100,23 @@ html, body {
   box-shadow: 0 14px 22px 0 rgba(0,0,0,0.2);
 }
 
-.split {
+.split-left {
   height: 100%;
   width: 39%;
   position: fixed;
   z-index: 1;
   top: 0;
-  overflow-x: hidden;
   padding-top: 20px;
-  
+}
+.split-right {
+  height: 100%;
+  width: 61%;
+  position: fixed;
+  left: 39%;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  padding-top: 20px;
 }
 
 .info-section {
@@ -119,9 +127,15 @@ html, body {
 }
 .list-section {
   position: absolute;
+  top: 0;
   right: 0;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
+/**
+ * Info Section
+*/
 .session-link {
   position: absolute;
   top: -8px;
@@ -156,13 +170,6 @@ html, body {
   font-size: 12px;
 }
 
-.list-button {
-  position: relative;
-  float: right;
-  bottom: 30px;
-  right: 7px;
-}
-
 .options-button {
   background-color: #2A4F6E;
   color: white;
@@ -182,6 +189,7 @@ html, body {
   background-image: radial-gradient(circle at center, rgb(63, 63, 63) 2px, transparent 2px);
   background-size: 7px 7px;
   display: inline-block;
+  transition: background-image .3s;
 }
 
 .options-content {
@@ -208,11 +216,43 @@ html, body {
 /* Change color of dropdown links on hover */
 .options-content a:hover {background-color: #ddd;}
 
+.options-menu:hover {
+  background-image: radial-gradient(circle at center, rgb(120, 120, 120) 2px, transparent 2px);
+}
 /* Show the dropdown menu on hover */
 .options-menu:hover .options-content {display: block;}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .options-menu:hover .options-button {background-color: rgb(33, 66, 94);}
+
+/**
+ * List Section
+*/
+.link-list {
+  position: relative;
+  left: 35px;
+  top: -20px;
+  white-space: nowrap;
+}
+
+.link-elem {
+  position: relative;
+  max-height: 25px;
+  margin-top: 10px;
+}
+
+.link-title {
+  position: relative;
+  top: -5px;
+  font-size: 10px;
+}
+.link-title a {
+  margin: 0px;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 
 /* Add some padding inside the card container */
 .container {

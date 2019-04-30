@@ -83,7 +83,7 @@ function createOptionsMenu(session) {
 
 function createInfoSection (sessionName, session) {
     var infoSection = document.createElement('div');
-    infoSection.classList.add("info-section", "split");
+    infoSection.classList.add("info-section", "split-left");
 
     let nameField = document.createElement('h2');
     let dateField = document.createElement('small');
@@ -118,9 +118,28 @@ function createInfoSection (sessionName, session) {
 
 function createListSection(session) {
     var listSection = document.createElement('div');
-    listSection.className = "list-section split";
+    listSection.className = "list-section split-right";
 
-    listSection.innerHTML = "<h2>Jane Flex</h2>";
+    let linkList = document.createElement('div');
+    linkList.className = 'link-list';
+
+    for (let tabInfo in session["urls"]) {
+        let url = session["urls"][tabInfo]["url"];
+        let title = session["urls"][tabInfo]["title"];
+        let listElem = document.createElement('li');
+        let urlField = document.createElement('span');
+
+        listElem.className = 'link-elem';
+
+        urlField.className = "link-title";
+        urlField.textContent = url;
+
+        listElem.style.listStyleImage = "url('/icons/list-20.png')";
+        listElem.appendChild(urlField);
+        linkList.appendChild(listElem);
+    }
+
+    listSection.appendChild(linkList);
 
     return listSection;
 }
