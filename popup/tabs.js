@@ -142,6 +142,7 @@ function createListSection(sessionName, session) {
         let listElem = document.createElement('li');
         let urlField = document.createElement('span');
         let icon = document.createElement('img');
+        let deleteWrapper = document.createElement('div');
         let deleteButton = document.createElement('button');
 
         listElem.className = 'link-elem';
@@ -155,20 +156,22 @@ function createListSection(sessionName, session) {
             listElem.style.listStyleType = 'none';
 
             urlField.style.left = '-4px';
-            urlField.style.top = '-3px';
 
             icon.className = "link-icon";
             icon.src = iconUrl;
             listElem.appendChild(icon);
         }
 
-        deleteButton.className = "delete-link mat-button";
+        deleteWrapper.className = "delete-tab-wrapper";
+
+        deleteButton.className = "delete-tab-button mat-button";
         deleteButton.textContent = "-";
         deleteButton.addEventListener("click", deleteTab.bind(null, sessionName, tabInfo));
+
+        deleteWrapper.appendChild(deleteButton);
         
         listElem.appendChild(urlField);
-        listElem.appendChild(deleteButton);
-        console.log(listElem.innerHTML);
+        listElem.appendChild(deleteWrapper);
         linkList.appendChild(listElem);
     }
     
