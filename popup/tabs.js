@@ -70,7 +70,6 @@ function createInfoSection (sessionName, session) {
     let optionsContent = document.createElement('div');
     let openInCurrentLink = document.createElement('a');
     let replaceCurrentLink = document.createElement('a');
-    let listButton = document.createElement('input');
 
     sessionLink.className = "session-link";
     sessionLink.textContent = sessionName;
@@ -102,18 +101,11 @@ function createInfoSection (sessionName, session) {
     optionsContent.appendChild(replaceCurrentLink);
     options.appendChild(optionsContent);
 
-    // listButton.className = 'list-button';
-    // listButton.type = "image";
-    // listButton.src = "/icons/list-20.png";
-    // listButton.addEventListener("click", openListView.bind(null, sessionName, session));
-
     infoSection.appendChild(sessionLink);
     infoSection.appendChild(dateField);
     infoSection.appendChild(openButton);
     infoSection.appendChild(deleteButton);
     infoSection.appendChild(options);
-    // infoSection.appendChild(deleteButton);
-    // infoSection.insertAdjacentElement('beforeend', listButton);
 
     return infoSection;
 }
