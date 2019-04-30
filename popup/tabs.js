@@ -71,8 +71,6 @@ function createInfoSection (sessionName, session) {
     let openInCurrentLink = document.createElement('a');
     let replaceCurrentLink = document.createElement('a');
     let listButton = document.createElement('input');
-    let optionButton = document.createElement('button');
-    let seperator = document.createElement('div');
 
     sessionLink.className = "session-link";
     sessionLink.textContent = sessionName;
@@ -90,36 +88,30 @@ function createInfoSection (sessionName, session) {
     deleteButton.setAttribute('href', "#");
     deleteButton.addEventListener("click", deleteSession.bind(null, sessionName));
 
+    openInCurrentLink.textContent = "Add to current window";
+    openInCurrentLink.setAttribute('href', "#");
+    openInCurrentLink.addEventListener("click", openSessionInCurrent.bind(null, session["urls"]));
+
+    replaceCurrentLink.textContent = "Replace current window";
+    replaceCurrentLink.setAttribute('href', "#");
+    replaceCurrentLink.addEventListener("click", replaceCurrentWindow.bind(null, session)); 
+
+    options.className = "options-menu";
+    optionsContent.className = "options-content";
+    optionsContent.appendChild(openInCurrentLink);
+    optionsContent.appendChild(replaceCurrentLink);
+    options.appendChild(optionsContent);
+
     // listButton.className = 'list-button';
     // listButton.type = "image";
     // listButton.src = "/icons/list-20.png";
     // listButton.addEventListener("click", openListView.bind(null, sessionName, session));
 
-    // openInCurrentLink.textContent = "Add to current window";
-    // openInCurrentLink.setAttribute('href', "#");
-    // openInCurrentLink.addEventListener("click", openSessionInCurrent.bind(null, session["urls"]));
-
-    // replaceCurrentLink.textContent = "Replace current window";
-    // replaceCurrentLink.setAttribute('href', "#");
-    // replaceCurrentLink.addEventListener("click", replaceCurrentWindow.bind(null, session)); 
-
-    // options.className = "options-menu";
-    // optionsContent.className = "options-content";
-    // optionButton.className = "options-button";
-    // optionButton.textContent = "options";
-    // optionsContent.appendChild(openInNewLink);
-    // optionsContent.appendChild(replaceCurrentLink);
-    // options.appendChild(optionButton);
-    // options.appendChild(optionsContent);
-
-    seperator.className = "seperator";
-
     infoSection.appendChild(sessionLink);
-    infoSection.appendChild(seperator);
     infoSection.appendChild(dateField);
     infoSection.appendChild(openButton);
     infoSection.appendChild(deleteButton);
-    // infoSection.appendChild(options);
+    infoSection.appendChild(options);
     // infoSection.appendChild(deleteButton);
     // infoSection.insertAdjacentElement('beforeend', listButton);
 

@@ -26,7 +26,8 @@ html, body {
 .sessions-list {
   padding-left: 10px;
   overflow: scroll;
-  height: 383px;
+  height: 400px;
+  z-index: 1;
 }
 
 .sessions-list a {
@@ -45,7 +46,7 @@ html, body {
   transition: background-color .3s;
 }
 .mat-button:hover, .mat-button:focus {
-  background-color: #99a19d;
+  background-color: #bdc0bf;
 }
 
 .mat-button > * {
@@ -66,7 +67,7 @@ html, body {
     
   border-radius: 100%;
   
-  background-color: rgba(236, 240, 241, .3);
+  background-color: rgb(255, 255, 255);
   
   -webkit-transform: translate(-50%, -50%);
   -moz-transform: translate(-50%, -50%);
@@ -90,7 +91,7 @@ html, body {
   /* Add shadows to create the "card" effect */
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
-  height: 200px;
+  height: 180px;
   margin-block-start: 20px;
   position: relative;
 }
@@ -107,16 +108,14 @@ html, body {
   top: 0;
   overflow-x: hidden;
   padding-top: 20px;
-}
-
-.seperator {
-  border-right:1px solid #000;
-  height:100%;
+  
 }
 
 .info-section {
   position: absolute;
   left: 0;
+  box-shadow: 8px 1px 10px -5px rgb(165, 165, 165);
+
 }
 .list-section {
   position: absolute;
@@ -143,6 +142,7 @@ html, body {
 
 .open-button {
   position: absolute;
+  background-color: white;
   bottom: 3px;
   left: 3px;
   font-size: 12px;
@@ -151,6 +151,7 @@ html, body {
 .delete-button {
   position: absolute;
   bottom: 3px;
+  background-color: white;
   right: 3px;
   font-size: 12px;
 }
@@ -173,6 +174,13 @@ html, body {
 }
 
 .options-menu {
+  position: relative;
+  top: 60px;
+  left: 18px;
+  width: 7px;
+  height: 20px;
+  background-image: radial-gradient(circle at center, rgb(63, 63, 63) 2px, transparent 2px);
+  background-size: 7px 7px;
   display: inline-block;
 }
 
@@ -180,16 +188,17 @@ html, body {
   display: none;
   position: absolute;
   background-color: #f1f1f1;
-  min-width: 160px;
+  min-width: 110px;
   height: auto;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
+  overflow: scroll;
 }
 
 /* Links inside the dropdown */
 .options-content a {
   color: black;
-  padding: 12px 16px;
+  padding: 5px 5px;
   text-decoration: none;
   font-size: 9px;
   display: block;
@@ -220,6 +229,7 @@ html, body {
   bottom: 0px;
   background-color: rgb(255, 255, 255);
   width:inherit;
+  z-index: 5;
 }
 
 .name-input {
