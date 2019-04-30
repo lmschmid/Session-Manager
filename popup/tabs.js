@@ -1,6 +1,7 @@
 import { addSessionToStorage, getSavedSessions, clearSessions,
         setActiveListView, deleteSessionFromStorage, writeToLocalFile,
-        readFromLocalFile } from "../logic/sessionStorage.js"; 
+        readFromLocalFile, deleteTabFromStorage }
+        from "../logic/sessionStorage.js";
 import { shouldTabsLoad, shouldRestoreWindow } from "../logic/settingsStorage.js";
 
 // Zoom constants. Define Max, Min, increment and default values
@@ -141,6 +142,7 @@ function createListSection(sessionName, session) {
         let listElem = document.createElement('li');
         let urlField = document.createElement('span');
         let icon = document.createElement('img');
+        let deleteButton = document.createElement('button');
 
         listElem.className = 'link-elem';
 
@@ -157,11 +159,16 @@ function createListSection(sessionName, session) {
 
             icon.className = "link-icon";
             icon.src = iconUrl;
-            icon.alt = ".";
             listElem.appendChild(icon);
         }
 
+        deleteButton.className = "delete-link mat-button";
+        deleteButton.textContent = "-";
+        deleteButton.addEventListener("click", deleteTab.bind(null, sessionName, tabInfo));
+        
         listElem.appendChild(urlField);
+        listElem.appendChild(deleteButton);
+        console.log(listElem.innerHTML);
         linkList.appendChild(listElem);
     }
     
@@ -183,8 +190,6 @@ function createSessionCard(sessionName, session) {
     newCard.className = "card";
     newCard.appendChild(infoSection);
     newCard.appendChild(listSection);
-
-    console.log(newCard.innerHTML);
 
     return newCard;
 }
@@ -222,6 +227,11 @@ function populateSessions() {
 
         sessionsList.appendChild(savedSessions);
     });
+}
+
+function deleteTab(sessionName, tab) {
+    deleteTabFromStorage(sessionName, tab)
+    populateSessions();
 }
 
 function deleteSession(sessionName) {

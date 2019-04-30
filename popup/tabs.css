@@ -130,8 +130,6 @@ html, body {
   position: absolute;
   top: 0;
   right: 0;
-  overflow-x: hidden;
-  overflow-y: scroll;
 }
 
 /**
@@ -231,22 +229,26 @@ html, body {
 */
 .link-list {
   position: relative;
-  left: 25px;
+  width: 100%;
+  height: inherit;
   top: -20px;
   white-space: nowrap;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .link-elem {
-  position: relative;
   max-height: 25px;
   margin-top: 10px;
+  position: relative;
+  left: 20px;
 }
 
 .link-icon {
   width: 15px;
   height: 15px;
   position: relative;
-  left: -15px;
+  left: -10px;
 }
 
 .link-title {
@@ -259,8 +261,17 @@ html, body {
   cursor: pointer;
 }
 
+.delete-link {
+  position: relative;
+  right: 0px;
+  text-align: center;
+  background-color: white;
+  border: .5px solid #bdc0bf;
+}
+
 .list-button {
-  position: sticky;
+  position: absolute;
+  bottom: 0px;
   width: 100%;
   margin-left: 2px;
   margin-right: 2px;
@@ -268,6 +279,7 @@ html, body {
   padding-bottom: 3px;
   text-align: center;
   background-color: white;
+  border: .5px solid #bdc0bf;
 }
 
 /* Add some padding inside the card container */
