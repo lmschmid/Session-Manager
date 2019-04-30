@@ -128,13 +128,25 @@ function createListSection(session) {
         let title = session["urls"][tabInfo]["title"];
         let listElem = document.createElement('li');
         let urlField = document.createElement('span');
+        let icon = document.createElement('img');
 
         listElem.className = 'link-elem';
 
         urlField.className = "link-title";
-        urlField.textContent = url;
+        urlField.textContent = title;
 
-        listElem.style.listStyleImage = "url('/icons/list-20.png')";
+        if (session["urls"][tabInfo].icon) {
+            let iconUrl = session["urls"][tabInfo]["icon"];
+            listElem.style.listStyleType = 'none';
+
+            urlField.style.left = '-4px';
+            urlField.style.top = '-3px';
+
+            icon.className = "link-icon";
+            icon.src = iconUrl;
+            icon.alt = ".";
+            listElem.appendChild(icon);
+        }
         listElem.appendChild(urlField);
         linkList.appendChild(listElem);
     }
@@ -268,7 +280,7 @@ document.addEventListener("click", async (e) => {
         var urls = [];
         for (var tab of tabs) {
             if (!(tab.url.includes("about:", 0))) {
-            urls.push({url:tab.url, title:tab.title});
+            urls.push({url:tab.url, title:tab.title, icon:tab.favIconUrl});
             }
         }
         return urls;

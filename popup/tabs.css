@@ -230,7 +230,7 @@ html, body {
 */
 .link-list {
   position: relative;
-  left: 35px;
+  left: 25px;
   top: -20px;
   white-space: nowrap;
 }
@@ -241,9 +241,16 @@ html, body {
   margin-top: 10px;
 }
 
+.link-icon {
+  width: 15px;
+  height: 15px;
+  position: relative;
+  left: -15px;
+}
+
 .link-title {
   position: relative;
-  top: -5px;
+  top: -2px;
   font-size: 10px;
 }
 .link-title a {
