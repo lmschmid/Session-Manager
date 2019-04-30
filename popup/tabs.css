@@ -281,16 +281,35 @@ html, body {
   background-color: white;
 }
 
-.list-button {
+.list-bottom-div {
   position: absolute;
   bottom: 0px;
   width: 100%;
+  z-index: -1;
+}
+
+.add-tab-button {
+  position: absolute;
+  bottom: 0px;
+  right:0px;
+  width: 15%;
   padding-top: 3px;
   padding-bottom: 3px;
   text-align: center;
   background-color: white;
   border-radius: 0px;
-  z-index: -1;
+}
+
+.list-button {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 85%;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  text-align: center;
+  background-color: white;
+  border-radius: 0px;
 }
 
 /* Add some padding inside the card container */

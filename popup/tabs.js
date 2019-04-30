@@ -1,6 +1,6 @@
 import { addSessionToStorage, getSavedSessions, clearSessions,
         setActiveListView, deleteSessionFromStorage, writeToLocalFile,
-        readFromLocalFile, deleteTabFromStorage }
+        readFromLocalFile, deleteTabFromStorage, addTabToStorage }
         from "../logic/sessionStorage.js";
 import { shouldTabsLoad, shouldRestoreWindow } from "../logic/settingsStorage.js";
 
@@ -130,12 +130,6 @@ function createListSection(sessionName, session) {
     let linkList = document.createElement('div');
     linkList.className = 'link-list';
 
-    let listButton = document.createElement('button');
-    listButton.className = 'list-button mat-button';
-    listButton.textContent = "Open list in new tab";
-    listButton.setAttribute('href', "#");
-    listButton.addEventListener("click", openListView.bind(null, sessionName, session));
-
     for (let tabInfo in session["urls"]) {
         let url = session["urls"][tabInfo]["url"];
         let title = session["urls"][tabInfo]["title"];
@@ -174,9 +168,25 @@ function createListSection(sessionName, session) {
         listElem.appendChild(deleteWrapper);
         linkList.appendChild(listElem);
     }
+
+    let bottomDiv = document.createElement('div');
+
+    let listButton = document.createElement('button');
+    listButton.className = 'list-button mat-button';
+    listButton.textContent = "Open list in new tab";
+    listButton.setAttribute('href', "#");
+    listButton.addEventListener("click", openListView.bind(null, sessionName, session));
+
+    let addTabButton = document.createElement('button');
+    addTabButton.className = "add-tab-button mat-button";
+    addTabButton.textContent = "+";
+
+    bottomDiv.appendChild(listButton);
+    bottomDiv.appendChild(addTabButton);
+    addTabButton.addEventListener("click", addTab.bind(null, sessionName));
     
     listSection.appendChild(linkList);
-    listSection.appendChild(listButton);
+    listSection.appendChild(bottomDiv);
 
     return listSection;
 }
@@ -229,6 +239,19 @@ function populateSessions() {
         }
 
         sessionsList.appendChild(savedSessions);
+    });
+}
+
+function addTab(sessionName) {
+    getCurrentWindowTabs().then((tabs) => {
+        for (var tab of tabs) {
+            if (!(tab.url.includes("about:", 0)) && tab.active) {
+                let tabInfo = {url:tab.url, title:tab.title, icon:tab.favIconUrl};
+                addTabToStorage(sessionName, tabInfo);
+                populateSessions();
+                break;
+            }
+        }
     });
 }
 

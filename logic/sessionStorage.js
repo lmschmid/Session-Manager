@@ -2,7 +2,7 @@ import { saveAs } from "../dependencies/FileSaver.js";
 
 export { gettingStoredStatsLocal, addSessionToStorage, deleteSessionFromStorage,
     getSavedSessions, setActiveListView, getActiveListView, clearSessions,
-    writeToLocalFile, readFromLocalFile, deleteTabFromStorage };
+    writeToLocalFile, readFromLocalFile, deleteTabFromStorage, addTabToStorage };
 
 var gettingStoredStatsLocal = browser.storage.local.get();
 var gettingStoredStatsSync = browser.storage.sync.get();
@@ -38,6 +38,18 @@ function deleteTabFromStorage(sessionName, tab) {
     gettingStoredStatsLocal.then(results => {
         results.sessions[sessionName]["urls"].splice(tab, 1);
         console.log("deleting tab");
+        console.log(results);
+
+        delete results.settings;
+        delete results.listview;
+        setResults(results);
+    });
+}
+
+function addTabToStorage(sessionName, tab) {
+    gettingStoredStatsLocal.then(results => {
+        results.sessions[sessionName]["urls"].push(tab);
+        console.log("adding tab");
         console.log(results);
 
         delete results.settings;
