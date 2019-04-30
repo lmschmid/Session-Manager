@@ -188,7 +188,9 @@ html, body {
   background-image: radial-gradient(circle at center, rgb(116, 116, 116) 2px, transparent 2px);
   background-size: 7px 7px;
   display: inline-block;
+  border-radius: 10px;
   transition: background-image .3s;
+  transition: background-color .3s;
 }
 
 .options-content {
@@ -210,6 +212,11 @@ html, body {
   text-decoration: none;
   font-size: 9px;
   display: block;
+}
+
+.options-menu:hover {
+  background-color: rgb(116, 116, 116);
+  border-radius: 10px;
 }
 
 /* Change color of dropdown links on hover */
