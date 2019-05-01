@@ -28,12 +28,26 @@ function handleFiles() {
     const fileList = this.files; /* now you can work with the file list */
     const jsonFile = fileList[0];
 
+    if (jsonFile.type != 'application/json') {
+        // TODO tell user to input valid file
+        return;
+    }
+
     const reader = new FileReader();
     reader.onload = function (e) {
         var text = reader.result;
         var results = JSON.parse(text);
-        restoreStorageFromFile(results);
-        alert("Sessions restored successfully!");
+
+        let resultsKeys = Object.keys(results);
+        console.log(resultsKeys);
+
+        if (resultsKeys.length != 3 || resultsKeys[0] != "listview" ||
+            resultsKeys[1] != "sessions" || resultsKeys[2] != "settings") {
+            // TODO tell user to input valid file
+        } else {
+            restoreStorageFromFile(results);
+            alert("Sessions restored successfully!");
+        }
     }
 
     reader.readAsText(jsonFile);
