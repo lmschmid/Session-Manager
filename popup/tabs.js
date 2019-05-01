@@ -350,28 +350,39 @@ function getCurrentURLs() {
     });
 }
 
-const settingsButton = document.getElementById("settings-button");
-settingsButton.addEventListener("click", openSettings, false);
 
 document.addEventListener("DOMContentLoaded", populateSessions);
 document.addEventListener("click", async (e) => {
 
-    if (e.target.id == "save-button") {
+    if (e.target.id === "save-button") {
         let sessionName = document.getElementById('name-input').value;
         console.log(sessionName);
         if (sessionName === "") {
-        console.log("empty name, not saving");
+            console.log("empty name, not saving");
         }
         else {
-        document.getElementById('name-input').value = '';
-        getCurrentURLs().then((sessionURLs) => {
-            browser.windows.getCurrent().then((currWindow) => {
-                addSessionToStorage(sessionURLs, sessionName, currWindow).then((session) => {
-                    addSessionToPopup(sessionName, session)
+            document.getElementById('name-input').value = '';
+            getCurrentURLs().then((sessionURLs) => {
+                browser.windows.getCurrent().then((currWindow) => {
+                    addSessionToStorage(sessionURLs, sessionName, currWindow).then((session) => {
+                        addSessionToPopup(sessionName, session)
+                    });
                 });
             });
-        });
         }
+    } 
+    else if (e.target.id === 'search-button') {
+        const searchBar = document.getElementById('search-bar');
+        if (searchBar.style.width === '164px') {
+            searchBar.style.width = '0px';
+            searchBar.style.backgroundColor = 'rgb(202, 202, 202)';
+        } else {
+            searchBar.style.width = '164px';
+            searchBar.style.backgroundColor = 'rgb(235, 235, 235)';
+        }
+    } 
+    else if (e.target.id == "settings-button") {
+        openSettings();
     }
 
     e.preventDefault();

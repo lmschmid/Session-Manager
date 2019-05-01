@@ -5,6 +5,34 @@ html, body {
 }
 
 /*
+ ******* Search are *******
+ */
+.search-div {
+  position: absolute;
+  right: 0px;
+}
+
+.search-bar {
+  display: block;
+  position: absolute;
+  right: 85px;
+  top: -3px;
+  width: 0px;
+  height: 30px;
+  border: none;
+  border-radius: 4px;
+  background-color: rgb(202, 202, 202);
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+}
+
+.search-button {
+  position: absolute;
+  right: 50px;
+  top: -2px;
+}
+
+/*
  ******* Settings button *******
  */
 .settings-button {
