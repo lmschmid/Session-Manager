@@ -18,10 +18,13 @@ function setResults(results) {
     sending.then(handleResponse, handleError);
 }
 
-function setActiveListView(urls) {
+function setActiveListView(sessionName, urls) {
     gettingStoredStatsLocal.then(results => {
         results["listview"] = {};
-        results["listview"] = Array.from(urls);
+        results["listview"] = {
+            sessionName: sessionName,
+            urls: Array.from(urls)
+        }
 
         delete results.sessions;
         delete results.settings;

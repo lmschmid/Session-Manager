@@ -23,7 +23,7 @@ function openListView(sessionName, session) {
         url:"/listview/listview.html"
     });
 
-    setActiveListView(session["urls"]);
+    setActiveListView(sessionName, session["urls"]);
 }
 
 /** 

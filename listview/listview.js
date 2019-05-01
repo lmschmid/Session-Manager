@@ -10,13 +10,13 @@ function filterSessions(filterString) {
     listElems.textContent = "";
     console.log("filterString: "+filterString);
 
-    getActiveListView().then((urls) => {
-        for (var url in urls) {
-            let title = urls[url]["title"];
+    getActiveListView().then((session) => {
+        for (var tab of session.urls) {
+            let title = tab.title;
             if (title.toUpperCase().includes(filterString.toUpperCase())) {
                 console.log("title: "+title);
 
-                let tabLink = constructSessionLink(urls[url]["title"], urls[url]["url"]);
+                let tabLink = constructSessionLink(tab.title, tab.url);
                 listElems.appendChild(tabLink);
             }
         }
@@ -38,17 +38,16 @@ function constructSessionLink(title, url) {
     return tabLink;
 }
 
-// pass a title with the urls to display session name on web page
 // add favIconUrl to bullets
 function listSessions() {
-    console.log("in listSessions");
     let listElems = document.getElementById('list-elems');
-    getActiveListView().then((urls) => {
-        console.log("listSessions urls: "+urls);
-        for (var url in urls) {
-            console.log("link: "+urls[url]["url"]);
+    getActiveListView().then((session) => {
+        document.title = session.sessionName;
 
-            let tabLink = constructSessionLink(urls[url]["title"], urls[url]["url"])
+        console.log("listSessions");
+        console.log(session);
+        for (var tab of session.urls) {
+            let tabLink = constructSessionLink(tab.title, tab.url)
             listElems.appendChild(tabLink);
         }
     });
