@@ -1,4 +1,4 @@
-import { clearSessions, readFromLocalFile, writeToLocalFile }
+import { clearSessions, restoreStorageFromFile, writeToLocalFile }
          from "../logic/sessionStorage.js";
 import { setShouldTabsLoad, setShouldRestoreWindow, shouldTabsLoad,
          shouldRestoreWindow } from "../logic/settingsStorage.js";
@@ -26,7 +26,17 @@ let restoreSessionInput = document.getElementById('json-button');
 restoreSessionInput.addEventListener("change", handleFiles, false);
 function handleFiles() {
     const fileList = this.files; /* now you can work with the file list */
-    console.log(fileList);
+    const jsonFile = fileList[0];
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        var text = reader.result;
+        var results = JSON.parse(text);
+        restoreStorageFromFile(results);
+        alert("Sessions restored successfully!");
+    }
+
+    reader.readAsText(jsonFile);
 }
 
 let saveInput = document.getElementById("save-name-input");

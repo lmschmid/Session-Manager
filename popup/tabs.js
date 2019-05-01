@@ -1,7 +1,6 @@
 import { addSessionToStorage, getSavedSessions, clearSessions,
-        setActiveListView, deleteSessionFromStorage, writeToLocalFile,
-        readFromLocalFile, deleteTabFromStorage, addTabToStorage,
-        replaceSessionData }
+        setActiveListView, deleteSessionFromStorage,deleteTabFromStorage,
+        addTabToStorage, replaceSessionData }
         from "../logic/sessionStorage.js";
 import { shouldTabsLoad, shouldRestoreWindow } from "../logic/settingsStorage.js";
 

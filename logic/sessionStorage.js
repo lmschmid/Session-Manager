@@ -2,8 +2,8 @@ import { saveAs } from "../dependencies/FileSaver.js";
 
 export { gettingStoredStatsLocal, addSessionToStorage, deleteSessionFromStorage,
     getSavedSessions, setActiveListView, getActiveListView, clearSessions,
-    writeToLocalFile, readFromLocalFile, deleteTabFromStorage, addTabToStorage,
-    replaceSessionData };
+    writeToLocalFile, deleteTabFromStorage, addTabToStorage,
+    restoreStorageFromFile, replaceSessionData };
 
 var gettingStoredStatsLocal = browser.storage.local.get();
 var gettingStoredStatsSync = browser.storage.sync.get();
@@ -161,10 +161,8 @@ function writeToLocalFile(sessionName) {
     });
 }
 
-function readFromLocalFile() {
-    // var results = readFile();
-    // browser.storage.local.set(results);
-    
+function restoreStorageFromFile(data) {
+    setResults(data);
 }
 
 /** 
