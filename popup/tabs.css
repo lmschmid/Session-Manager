@@ -239,7 +239,7 @@ html, body {
   max-width: 143px;
   overflow: hidden;
   display: inline-block;
-  top: -2px;
+  top: -1.5px;
   font-size: 10px;
   text-overflow: ellipsis;
 }
