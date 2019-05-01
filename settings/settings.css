@@ -31,9 +31,6 @@ html, body {
     font-size: 15px;
     border-width: 1px;
 }
-.save-name-input:not(:focus) {
-    color: darkgray;
-}
 
 
 /*

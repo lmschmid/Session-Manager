@@ -53,15 +53,6 @@ function handleFiles() {
     reader.readAsText(jsonFile);
 }
 
-let saveInput = document.getElementById("save-name-input");
-const defaultInputText = saveInput.value;
-saveInput.addEventListener("blur", resetInputText, false);
-function resetInputText() {
-    if (saveInput.value == "") {
-        saveInput.value = defaultInputText;
-    }
-}
-
 
 document.addEventListener("DOMContentLoaded", populateToggleSettings);
 document.addEventListener("click", async (e) => {
