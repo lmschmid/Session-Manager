@@ -25,20 +25,42 @@ function filterSessions(filterString) {
 
 function constructSessionLink(title, url) {
     let tabLink = document.createElement('li');
-    tabLink.className = 'session-link';
-    tabLink.textContent = title;
+    let urlField = document.createElement('span');
+    let icon = document.createElement('img');
+    let deleteWrapper = document.createElement('div');
+    let deleteButton = document.createElement('button');
 
-    let tabA = document.createElement('a');
-    tabA.className = 'session-a';
-    tabA.setAttribute('href', "#");
-    tabA.addEventListener("click", openLink.bind(null, url));
+    tabLink.className = 'link-elem';
 
-    tabLink.appendChild(tabA);
+    urlField.className = "link-title";
+    urlField.textContent = title;
+    urlField.addEventListener("click", openLink.bind(null, url));
+
+    if (url.icon) {
+        let iconUrl = urll.icon;
+        tabLink.style.listStyleType = 'none';
+
+        urlField.style.left = '-4px';
+
+        icon.className = "link-icon";
+        icon.src = iconUrl;
+        tabLink.appendChild(icon);
+    }
+
+    deleteWrapper.className = "delete-tab-wrapper";
+
+    deleteButton.className = "delete-tab-button mat-button";
+    deleteButton.textContent = "-";
+    // deleteButton.addEventListener("click", deleteTab.bind(null, sessionName, tabInfo));
+
+    deleteWrapper.appendChild(deleteButton);
+    
+    tabLink.appendChild(urlField);
+    tabLink.appendChild(deleteWrapper);
 
     return tabLink;
 }
 
-// add favIconUrl to bullets
 function listSessions() {
     let listElems = document.getElementById('list-elems');
     getActiveListView().then((session) => {
