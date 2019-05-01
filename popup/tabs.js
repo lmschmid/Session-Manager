@@ -375,7 +375,7 @@ document.addEventListener("click", async (e) => {
         const searchBar = document.getElementById('search-bar');
         if (searchBar.style.width === '164px') {
             searchBar.style.width = '0px';
-            searchBar.style.backgroundColor = 'rgb(202, 202, 202)';
+            setTimeout(function() {searchBar.style.backgroundColor = 'rgb(202, 202, 202)';}, 400);
         } else {
             searchBar.style.width = '164px';
             searchBar.style.backgroundColor = 'rgb(235, 235, 235)';
