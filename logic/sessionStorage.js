@@ -2,7 +2,8 @@ import { saveAs } from "../dependencies/FileSaver.js";
 
 export { gettingStoredStatsLocal, addSessionToStorage, deleteSessionFromStorage,
     getSavedSessions, setActiveListView, getActiveListView, clearSessions,
-    writeToLocalFile, readFromLocalFile, deleteTabFromStorage, addTabToStorage };
+    writeToLocalFile, readFromLocalFile, deleteTabFromStorage, addTabToStorage,
+    replaceSessionData };
 
 var gettingStoredStatsLocal = browser.storage.local.get();
 var gettingStoredStatsSync = browser.storage.sync.get();
@@ -31,6 +32,19 @@ function setActiveListView(urls) {
 function getActiveListView() {
     return gettingStoredStatsLocal.then(results => {
         return results["listview"];
+    });
+}
+
+function replaceSessionData(sessionName, sessionURLs) {
+    console.log(sessionURLs);
+    gettingStoredStatsLocal.then(results => {
+        results.sessions[sessionName]["urls"] = sessionURLs;
+        console.log("replacing session "+sessionName);
+        console.log(results);
+
+        delete results.settings;
+        delete results.listview;
+        setResults(results);
     });
 }
 

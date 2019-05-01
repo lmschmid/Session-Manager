@@ -1,6 +1,7 @@
 import { addSessionToStorage, getSavedSessions, clearSessions,
         setActiveListView, deleteSessionFromStorage, writeToLocalFile,
-        readFromLocalFile, deleteTabFromStorage, addTabToStorage }
+        readFromLocalFile, deleteTabFromStorage, addTabToStorage,
+        replaceSessionData }
         from "../logic/sessionStorage.js";
 import { shouldTabsLoad, shouldRestoreWindow } from "../logic/settingsStorage.js";
 
@@ -64,24 +65,30 @@ function handleError(error) {
     console.log(`Error: ${error}`);
 }
 
-function createOptionsMenu(session) {
+function createOptionsMenu(sessionName, session) {
     let options = document.createElement('div');
     let optionsContent = document.createElement('div');
     let openInCurrentLink = document.createElement('a');
     let replaceCurrentLink = document.createElement('a');
+    let replaceWithCurrentLink = document.createElement('a');
 
     openInCurrentLink.textContent = "Add to current window";
     openInCurrentLink.setAttribute('href', "#");
     openInCurrentLink.addEventListener("click", openSessionInCurrent.bind(null, session["urls"]));
 
-    replaceCurrentLink.textContent = "Replace current window";
+    replaceCurrentLink.textContent = "Close current window, open new";
     replaceCurrentLink.setAttribute('href', "#");
     replaceCurrentLink.addEventListener("click", replaceCurrentWindow.bind(null, session)); 
+
+    replaceWithCurrentLink.textContent = "Replace session with current window";
+    replaceWithCurrentLink.setAttribute('href', "#");
+    replaceWithCurrentLink.addEventListener("click", replaceSession.bind(null, sessionName));
 
     options.className = "options-menu";
     optionsContent.className = "options-content";
     optionsContent.appendChild(openInCurrentLink);
     optionsContent.appendChild(replaceCurrentLink);
+    optionsContent.appendChild(replaceWithCurrentLink);
     options.appendChild(optionsContent)
 
     return options;
@@ -96,7 +103,7 @@ function createInfoSection (sessionName, session) {
     let dateField = document.createElement('small');
     let deleteButton = document.createElement('button');
     let openButton = document.createElement('button');
-    let options = createOptionsMenu(session);
+    let options = createOptionsMenu(sessionName, session);
 
     nameField.className = "session-link";
     nameField.textContent = sessionName;
@@ -242,6 +249,13 @@ function populateSessions() {
     });
 }
 
+function replaceSession(sessionName) {
+    getCurrentURLs().then((sessionURLs) => {
+        replaceSessionData(sessionName, sessionURLs);
+        populateSessions();
+    });
+}
+
 function addTab(sessionName) {
     getCurrentWindowTabs().then((tabs) => {
         for (var tab of tabs) {
@@ -321,25 +335,23 @@ function replaceCurrentWindow(urls) {
 function getCurrentWindowTabs() {
     return browser.tabs.query({currentWindow: true});
 }
+function getCurrentURLs() {
+    return getCurrentWindowTabs().then((tabs) => {
+    var urls = [];
+    for (var tab of tabs) {
+        if (!(tab.url.includes("about:", 0))) {
+        urls.push({url:tab.url, title:tab.title, icon:tab.favIconUrl});
+        }
+    }
+    return urls;
+    });
+}
 
 const settingsButton = document.getElementById("settings-button");
 settingsButton.addEventListener("click", openSettings, false);
 
 document.addEventListener("DOMContentLoaded", populateSessions);
 document.addEventListener("click", async (e) => {
-
-    function getCurrentURLs() {
-        return getCurrentWindowTabs().then((tabs) => {
-        var urls = [];
-        for (var tab of tabs) {
-            if (!(tab.url.includes("about:", 0))) {
-            urls.push({url:tab.url, title:tab.title, icon:tab.favIconUrl});
-            }
-        }
-        return urls;
-        });
-    }
-
 
     if (e.target.id == "save-button") {
         let sessionName = document.getElementById('name-input').value;

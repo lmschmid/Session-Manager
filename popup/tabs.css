@@ -32,56 +32,6 @@ html, body {
   display: block;
 }
 
-.mat-button {
-  display: block;
-  padding: 5;
-
-  overflow: hidden;
-
-  border-width: 0;
-  outline: none;
-  border-radius: 2px;
-  transition: background-color .3s;
-}
-.mat-button:hover, .mat-button:focus {
-  background-color: #bdc0bf;
-}
-
-.mat-button > * {
-  position: relative;
-}
-
-
-.mat-button:before {
-  content: "";
-  
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  
-  display: block;
-  width: 0;
-  padding-top: 0;
-    
-  border-radius: 100%;
-  
-  background-color: rgb(255, 255, 255);
-  
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-
-.mat-button:active:before {
-  width: 120%;
-  padding-top: 120%;
-  
-  transition: width .2s ease-out, padding-top .2s ease-out;
-}
-
-
 /*
  ******* Card *******
  */
@@ -212,6 +162,7 @@ html, body {
   text-decoration: none;
   font-size: 9px;
   display: block;
+  transition: font-size .1s;
 }
 
 .options-menu:hover {
@@ -220,7 +171,7 @@ html, body {
 }
 
 /* Change color of dropdown links on hover */
-.options-content a:hover {background-color: #ddd;}
+.options-content a:hover {background-color: #ddd; font-size: 12px;}
 
 /* Show the dropdown menu on hover */
 .options-menu:hover .options-content {display: block;}
@@ -360,4 +311,53 @@ html, body {
   background-color: rgb(202, 202, 202);
   color: white;
   font-weight: 700;
+}
+
+.mat-button {
+  display: block;
+  padding: 5;
+
+  overflow: hidden;
+
+  border-width: 0;
+  outline: none;
+  border-radius: 2px;
+  transition: background-color .3s;
+}
+.mat-button:hover, .mat-button:focus {
+  background-color: #bdc0bf;
+}
+
+.mat-button > * {
+  position: relative;
+}
+
+
+.mat-button:before {
+  content: "";
+  
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  
+  display: block;
+  width: 0;
+  padding-top: 0;
+    
+  border-radius: 100%;
+  
+  background-color: rgb(255, 255, 255);
+  
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.mat-button:active:before {
+  width: 120%;
+  padding-top: 120%;
+  
+  transition: width .2s ease-out, padding-top .2s ease-out;
 }
