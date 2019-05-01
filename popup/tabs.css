@@ -224,13 +224,15 @@ html, body {
   position: relative;
   right: 25px;
   float: right;
-  display: inline-flex;
+  display: none;
 }
 
 .delete-tab-button {
   text-align: center;
   background-color: white;
 }
+
+.link-elem:hover .delete-tab-wrapper {display: inline-flex;}
 
 .list-bottom-div {
   position: absolute;
