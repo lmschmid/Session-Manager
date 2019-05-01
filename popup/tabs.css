@@ -309,6 +309,10 @@ html, body {
   margin: 5px;
 }
 
+.panel-section {
+  box-shadow: 1px 8px 10px -5px rgb(165, 165, 165);
+}
+
 .panel-section-header {
   background-color: rgb(202, 202, 202);
   color: white;
