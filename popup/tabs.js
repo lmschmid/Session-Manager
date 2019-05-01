@@ -160,6 +160,10 @@ function createListSection(sessionName, session) {
             icon.className = "link-icon";
             icon.src = iconUrl;
             listElem.appendChild(icon);
+        } else {
+            listElem.style.left = '26px';
+            urlField.style.left = '5px';
+            urlField.style.top = '2px';
         }
 
         deleteWrapper.className = "delete-tab-wrapper";
