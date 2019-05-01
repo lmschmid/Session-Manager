@@ -77,7 +77,7 @@ function listSessions() {
 
 document.addEventListener("DOMContentLoaded", listSessions);
 let searchInput = document.getElementById('search-input');
-searchInput.addEventListener("change", async (e) => {
+searchInput.addEventListener("input", async (e) => {
     let filterString = searchInput.value;
     filterSessions(filterString);
 });

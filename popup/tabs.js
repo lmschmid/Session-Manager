@@ -350,6 +350,29 @@ function getCurrentURLs() {
     });
 }
 
+function filterSessions(filterString) {
+    console.log("Filtering by: "+filterString);
+    let sessionsList = document.getElementById('sessions-list');
+    let sessionCards = sessionsList.childNodes;
+    
+    for (var sessionCard of sessionCards) {
+        if (!sessionCard.innerText.toLowerCase().includes(
+            filterString.toLowerCase())) {
+            console.log("Removing card");
+            console.log(sessionCard);
+            sessionCard.style.display = 'none';
+        } else {
+            sessionCard.style.display = 'block';
+        }
+    }
+}
+
+let searchBar = document.getElementById('search-bar');
+searchBar.addEventListener('input', async (e) => {
+    let filterString = searchBar.value;
+    filterSessions(filterString);
+});
+
 
 document.addEventListener("DOMContentLoaded", populateSessions);
 document.addEventListener("click", async (e) => {
@@ -375,10 +398,12 @@ document.addEventListener("click", async (e) => {
         const searchBar = document.getElementById('search-bar');
         if (searchBar.style.width === '164px') {
             searchBar.style.width = '0px';
-            setTimeout(function() {searchBar.style.backgroundColor = 'rgb(202, 202, 202)';searchBar.value = "";}, 400);
+            setTimeout(function() {searchBar.style.backgroundColor = 'rgb(202, 202, 202)';searchBar.value = "";}, 390);
         } else {
             searchBar.style.width = '164px';
             searchBar.style.backgroundColor = 'rgb(235, 235, 235)';
+            searchBar.focus();
+            searchBar.select();
         }
     } 
     else if (e.target.id == "settings-button") {
