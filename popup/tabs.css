@@ -29,7 +29,14 @@ html, body {
 .search-button {
   position: absolute;
   right: 50px;
-  top: -2px;
+  top: -3px;
+  transition: background-color 0.3s;
+  background-color: rgb(202, 202, 202);
+  border: none;
+  border-radius: 50%;
+}
+.search-button:hover {
+  background-color: rgb(235, 235, 235);
 }
 
 /*
@@ -39,11 +46,19 @@ html, body {
   position: absolute;
   right: 15px;
   top: 17px;
-  transition: transform 0.8s;
-  transform-style: preserve-3d;
+  transition: background-color 0.3s;
+  background-color: rgb(202, 202, 202);
+  border: none;
+  border-radius: 50%;
 }
 .settings-button:hover {
-  transform: rotateZ(90deg);
+  background-color: rgb(235, 235, 235);
+}
+
+.settings-image {
+  position: relative;
+  right: 5px;
+  top: 1px;
 }
 
 /*

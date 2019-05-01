@@ -358,8 +358,6 @@ function filterSessions(filterString) {
     for (var sessionCard of sessionCards) {
         if (!sessionCard.innerText.toLowerCase().includes(
             filterString.toLowerCase())) {
-            console.log("Removing card");
-            console.log(sessionCard);
             sessionCard.style.display = 'none';
         } else {
             sessionCard.style.display = 'block';
