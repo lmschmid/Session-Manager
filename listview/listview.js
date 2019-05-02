@@ -16,7 +16,7 @@ function filterSessions(filterString) {
             if (title.toUpperCase().includes(filterString.toUpperCase())) {
                 console.log("title: "+title);
 
-                let tabLink = constructSessionLink(tab.title, tab.url);
+                let tabLink = constructSessionLink(tab);
                 listElems.appendChild(tabLink);
             }
         }

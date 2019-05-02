@@ -42,8 +42,13 @@ html, body {
 }
 
 /* Div of everything below search */
+.content-div {
+    width:100%;
+    height:100%;
+}
+
 .list-tabs {
-    width: 100%;
+    width:50%;
     height:100%;
 }
 
