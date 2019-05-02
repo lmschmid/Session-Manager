@@ -23,7 +23,7 @@ function filterSessions(filterString) {
     });
 }
 
-function constructSessionLink(title, url) {
+function constructSessionLink(tab) {
     let tabLink = document.createElement('li');
     let urlField = document.createElement('span');
     let icon = document.createElement('img');
@@ -33,11 +33,11 @@ function constructSessionLink(title, url) {
     tabLink.className = 'link-elem';
 
     urlField.className = "link-title";
-    urlField.textContent = title;
-    urlField.addEventListener("click", openLink.bind(null, url));
+    urlField.textContent = tab.title;
+    urlField.addEventListener("click", openLink.bind(null, tab.url));
 
-    if (url.icon) {
-        let iconUrl = urll.icon;
+    if (tab.icon) {
+        let iconUrl = tab.icon;
         tabLink.style.listStyleType = 'none';
 
         urlField.style.left = '-4px';
@@ -47,16 +47,7 @@ function constructSessionLink(title, url) {
         tabLink.appendChild(icon);
     }
 
-    deleteWrapper.className = "delete-tab-wrapper";
-
-    deleteButton.className = "delete-tab-button mat-button";
-    deleteButton.textContent = "-";
-    // deleteButton.addEventListener("click", deleteTab.bind(null, sessionName, tabInfo));
-
-    deleteWrapper.appendChild(deleteButton);
-    
     tabLink.appendChild(urlField);
-    tabLink.appendChild(deleteWrapper);
 
     return tabLink;
 }
@@ -69,7 +60,7 @@ function listSessions() {
         console.log("listSessions");
         console.log(session);
         for (var tab of session.urls) {
-            let tabLink = constructSessionLink(tab.title, tab.url)
+            let tabLink = constructSessionLink(tab)
             listElems.appendChild(tabLink);
         }
     });
