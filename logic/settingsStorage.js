@@ -26,7 +26,7 @@ function setShouldTabsLoad(shouldLoad) {
 
         delete results.sessions;
         delete results.listview;
-        setResults(resuts);
+        setResults(results);
     });
 }
 
