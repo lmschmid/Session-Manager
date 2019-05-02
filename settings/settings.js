@@ -53,7 +53,7 @@ function handleFiles() {
     reader.readAsText(jsonFile);
 }
 
-
+const saveInput = document.getElementById('save-name-input');
 document.addEventListener("DOMContentLoaded", populateToggleSettings);
 document.addEventListener("click", async (e) => {
     if (e.target.id == "clear-all-button") {
@@ -70,14 +70,6 @@ document.addEventListener("click", async (e) => {
         });
     }
     else if (e.target.id == "save-button") {
-        if (saveInput.value != defaultInputText) {
-            writeToLocalFile(saveInput.value);
-            saveInput.value = defaultInputText;
-        }
-    }
-    else if (e.target.id == "save-name-input") { // clear input field on click
-        if (saveInput.value == defaultInputText) {
-            saveInput.value = "";
-        }
+        writeToLocalFile(saveInput.value);
     }
 });

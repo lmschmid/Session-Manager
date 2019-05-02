@@ -88,7 +88,6 @@ function deleteSessionFromStorage(sessionName) {
 }
 
 function addSessionToStorage(urls, sessionName, window) {
-    // Load existent stats with the storage API.
     console.log("in addToStorage, urls: ", urls);
     console.log("in addToStorage, window: ", window);
     return gettingStoredStatsLocal.then(results => {
@@ -139,8 +138,6 @@ function clearSessions() {
 
 function onSessionsCleared() {
     console.log("sessions cleared");
-    let sessionsList = document.getElementById('sessions-list');
-    sessionsList.textContent = '';
 }
 
 function onSessionsClearedFail(e) {
