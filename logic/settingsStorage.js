@@ -41,7 +41,7 @@ function shouldTabsLoad() {
 
             delete results.sessions;
             delete results.listview;
-            setResults(resuts);
+            setResults(results);
 
             return false;
         } else {
@@ -60,7 +60,7 @@ function setShouldRestoreWindow(shouldLoad) {
 
         delete results.sessions;
         delete results.listview;
-        setResults(resuts);
+        setResults(results);
     });
 }
 
@@ -75,7 +75,7 @@ function shouldRestoreWindow() {
 
             delete results.sessions;
             delete results.listview;
-            setResults(resuts);
+            setResults(results);
 
             return true;
         } else {
