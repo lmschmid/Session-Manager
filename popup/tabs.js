@@ -3,6 +3,16 @@ import { addSessionToStorage, getSavedSessions, clearSessions,
         addTabToStorage, replaceSessionData }
         from "../logic/sessionStorage.js";
 import { shouldTabsLoad, shouldRestoreWindow } from "../logic/settingsStorage.js";
+import { extDB } from "../logic/database.js";
+
+extDB.open(function() {
+    console.log("Db opened");
+});
+setTimeout(function() {
+        extDB.createSession("Test", function(session) {
+            console.log(session);
+        });
+    }, 1000);
 
 // Zoom constants. Define Max, Min, increment and default values
 const ZOOM_INCREMENT = 0.2;

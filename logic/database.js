@@ -1,34 +1,36 @@
-export { sessionDB };
+export { extDB };
+
+// ONLY CREATES NEW OBJECTSTORES WHEN VERSION IS NEWER!!!!
 
 // Testing indexedDB
-var sessionDB = (function() {
-    var sDB = {};
+var extDB = (function() {
+    var eDB = {};
     var datastore = null;
   
     /**
      * Open a connection to the datastore.
      */
-    sDB.open = function(callback) {
+    eDB.open = function(callback) {
         // Database version.
-        var version = 1;
+        var version = 2;
     
         // Open a connection to the datastore.
-        var request = indexedDB.open('todos', version);
+        var request = indexedDB.open('ext', version);
     
         // Handle datastore upgrades.
         request.onupgradeneeded = function(e) {
             var db = e.target.result;
         
-            e.target.transaction.onerror = sDB.onerror;
+            e.target.transaction.onerror = eDB.onerror;
         
             // Delete the old datastore.
-            if (db.objectStoreNames.contains('todo')) {
-                db.deleteObjectStore('todo');
+            if (db.objectStoreNames.contains('sessions')) {
+                db.deleteObjectStore('sessions');
             }
         
             // Create a new datastore.
-            var store = db.createObjectStore('todo', {
-                keyPath: 'timestamp'
+            var store = db.createObjectStore('sessions', {
+                keyPath: 'title'
             });
         };
     
@@ -42,66 +44,25 @@ var sessionDB = (function() {
         };
     
         // Handle errors when opening the datastore.
-        request.onerror = sDB.onerror;
-    };
-    /**
-     * Fetch all of the todo items in the datastore.
-     */
-    sDB.fetchTodos = function(callback) {
-        var db = datastore;
-        var transaction = db.transaction(['todo'], 'readwrite');
-        var objStore = transaction.objectStore('todo');
-    
-        var keyRange = IDBKeyRange.lowerBound(0);
-        var cursorRequest = objStore.openCursor(keyRange);
-    
-        var todos = [];
-    
-        transaction.oncomplete = function(e) {
-            // Execute the callback function.
-            callback(todos);
-        };
-    
-        cursorRequest.onsuccess = function(e) {
-            var result = e.target.result;
-        
-            if (!!result == false) {
-                return;
-            }
-        
-            todos.push(result.value);
-        
-            result.continue();
-        };
-    
-        cursorRequest.onerror = sDB.onerror;
+        request.onerror = eDB.onerror;
     };
     /**
      * Create a new todo item.
      */
-    sDB.createTodo = function(text, callback) {
+    eDB.createSession = function(text, callback) {
         // Get a reference to the db.
         var db = datastore;
     
         // Initiate a new transaction.
-        var transaction = db.transaction(['todo'], 'readwrite');
+        var transaction = db.transaction(['sessions'], 'readwrite');
     
         // Get the datastore.
-        var objStore = transaction.objectStore('todo');
-    
-        // Create a timestamp for the todo item.
-        var timestamp = new Date().getTime();
-
-        // Liams test obj
-        var testObj = {
-            'nice': true
-        }
+        var objStore = transaction.objectStore('sessions');
     
         // Create an object for the todo item.
         var todo = {
-            'text': text,
-            'testObj': testObj,
-            'timestamp': timestamp
+            title: 'Pls work',
+            text: text,
         };
     
         // Create the datastore request.
@@ -114,34 +75,59 @@ var sessionDB = (function() {
         };
     
         // Handle errors.
-        request.onerror = sDB.onerror;
+        request.onerror = eDB.onerror;
     };
-    /**
-     * Delete a todo item.
-     */
-    sDB.deleteTodo = function(id, callback) {
-        var db = datastore;
-        var transaction = db.transaction(['todo'], 'readwrite');
-        var objStore = transaction.objectStore('todo');
+    // /**
+    //  * Fetch all of the todo items in the datastore.
+    //  */
+    // eDB.fetchTodos = function(callback) {
+    //     var db = datastore;
+    //     var transaction = db.transaction(['todo'], 'readwrite');
+    //     var objStore = transaction.objectStore('todo');
     
-        var request = objStore.delete(id);
+    //     var keyRange = IDBKeyRange.lowerBound(0);
+    //     var cursorRequest = objStore.openCursor(keyRange);
     
-        request.onsuccess = function(e) {
-            callback();
-        }
+    //     var todos = [];
     
-        request.onerror = function(e) {
-            console.log(e);
-        }
-    };
+    //     transaction.oncomplete = function(e) {
+    //         // Execute the callback function.
+    //         callback(todos);
+    //     };
+    
+    //     cursorRequest.onsuccess = function(e) {
+    //         var result = e.target.result;
+        
+    //         if (!!result == false) {
+    //             return;
+    //         }
+        
+    //         todos.push(result.value);
+        
+    //         result.continue();
+    //     };
+    
+    //     cursorRequest.onerror = eDB.onerror;
+    // };
+    // /**
+    //  * Delete a todo item.
+    //  */
+    // eDB.deleteTodo = function(id, callback) {
+    //     var db = datastore;
+    //     var transaction = db.transaction(['todo'], 'readwrite');
+    //     var objStore = transaction.objectStore('todo');
+    
+    //     var request = objStore.delete(id);
+    
+    //     request.onsuccess = function(e) {
+    //         callback();
+    //     }
+    
+    //     request.onerror = function(e) {
+    //         console.log(e);
+    //     }
+    // };
   
-    // Export the sDB object.
-    return sDB;
+    // Export the eDB object.
+    return eDB;
 }());
-
-// sessionDB.open(function() {
-//     console.log("Db opened");
-// });
-// setTimeout(function(){sessionDB.createTodo("Test", function(todo) {
-//     console.log(todo);
-// });}, 300);

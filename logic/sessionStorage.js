@@ -90,7 +90,7 @@ function deleteSessionFromStorage(sessionName) {
 function addSessionToStorage(urls, sessionName, window) {
     console.log("in addToStorage, urls: ", urls);
     console.log("in addToStorage, window: ", window);
-    return gettingStoredStatsLocal.then(results => {
+    return gettingStoredStatsLocal.then((results) => {
         // Initialize the saved stats if not yet initialized.
         if (!("sessions" in results)) {
             results = {
@@ -124,7 +124,7 @@ function getSavedSessions() {
             console.log("no sessions stored")
             return {};
         }
-        return results["sessions"];
+        return results.sessions;
     });
 }
 
