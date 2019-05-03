@@ -266,25 +266,21 @@ function addTab(sessionName) {
         for (var tab of tabs) {
             if (!(tab.url.includes("about:", 0)) && tab.active) {
                 let tabData = {url:tab.url, title:tab.title, icon:tab.favIconUrl};
-                extDB.addTabToSession(sessionName, tabData);
+                extDB.addTabToSession(sessionName, tabData, populateSessions);
                 break;
             }
         }
-        populateSessions();
+        // populateSessions();
     });
 }
 
 // TODO: change all these to interact with indexedDB
-
 function deleteTab(sessionName, tab) {
-    extDB.deleteTabFromSession(sessionName, tab);
-    populateSessions();
+    extDB.deleteTabFromSession(sessionName, tab, populateSessions);
 }
 
 function deleteSession(sessionName) {
-    extDB.deleteSession(sessionName).then(() => {
-        populateSessions();
-    });
+    extDB.deleteSession(sessionName, populateSessions);
 }
 
 function openSession(session) {

@@ -136,7 +136,7 @@ var extDB = (function() {
     /**
      * Delete a session.
      */
-    eDB.deleteSession = function(title) {
+    eDB.deleteSession = function(title, callback) {
         var db = datastore;
         var transaction = db.transaction(['sessions'], 'readwrite');
         var objStore = transaction.objectStore('sessions');
@@ -145,6 +145,7 @@ var extDB = (function() {
     
         request.onsuccess = function(e) {
             console.log("Deleted session "+title);
+            callback();
         }
     
         request.onerror = function(e) {
@@ -154,7 +155,7 @@ var extDB = (function() {
     /**
      * Delete a single tab from session.
      */
-    eDB.deleteTabFromSession = function(title, deleteTabIndex) {
+    eDB.deleteTabFromSession = function(title, deleteTabIndex, callback) {
         var db = datastore;
         var transaction = db.transaction(['sessions'], 'readwrite');
         var objStore = transaction.objectStore('sessions');
@@ -166,10 +167,7 @@ var extDB = (function() {
 
             data.tabs.splice(deleteTabIndex, 1);
 
-            eDB.createSession(title, data, function (newSession) {
-                console.log("New session post deleteTab");
-                console.log(newSession);
-            });
+            eDB.createSession(title, data, callback);
         }
     
         getRequest.onerror = function(e) {
@@ -179,7 +177,7 @@ var extDB = (function() {
     /**
      * Add a single tab to session.
      */
-    eDB.addTabToSession = function(title, addTab) {
+    eDB.addTabToSession = function(title, addTab, callback) {
         var db = datastore;
         var transaction = db.transaction(['sessions'], 'readwrite');
         var objStore = transaction.objectStore('sessions');
@@ -190,10 +188,7 @@ var extDB = (function() {
 
             session.data.tabs.push(addTab);
 
-            eDB.createSession(title, session.data, function (newSession) {
-                console.log("New session post addTab");
-                console.log(newSession);
-            });
+            eDB.createSession(title, session.data, callback);
         }
     
         getRequest.onerror = function(e) {
