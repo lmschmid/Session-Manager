@@ -1,14 +1,14 @@
-export { todoDB };
+export { sessionDB };
 
 // Testing indexedDB
-var todoDB = (function() {
-    var tDB = {};
+var sessionDB = (function() {
+    var sDB = {};
     var datastore = null;
   
     /**
      * Open a connection to the datastore.
      */
-    tDB.open = function(callback) {
+    sDB.open = function(callback) {
         // Database version.
         var version = 1;
     
@@ -19,7 +19,7 @@ var todoDB = (function() {
         request.onupgradeneeded = function(e) {
             var db = e.target.result;
         
-            e.target.transaction.onerror = tDB.onerror;
+            e.target.transaction.onerror = sDB.onerror;
         
             // Delete the old datastore.
             if (db.objectStoreNames.contains('todo')) {
@@ -42,12 +42,12 @@ var todoDB = (function() {
         };
     
         // Handle errors when opening the datastore.
-        request.onerror = tDB.onerror;
+        request.onerror = sDB.onerror;
     };
     /**
      * Fetch all of the todo items in the datastore.
      */
-    tDB.fetchTodos = function(callback) {
+    sDB.fetchTodos = function(callback) {
         var db = datastore;
         var transaction = db.transaction(['todo'], 'readwrite');
         var objStore = transaction.objectStore('todo');
@@ -74,12 +74,12 @@ var todoDB = (function() {
             result.continue();
         };
     
-        cursorRequest.onerror = tDB.onerror;
+        cursorRequest.onerror = sDB.onerror;
     };
     /**
      * Create a new todo item.
      */
-    tDB.createTodo = function(text, callback) {
+    sDB.createTodo = function(text, callback) {
         // Get a reference to the db.
         var db = datastore;
     
@@ -114,12 +114,12 @@ var todoDB = (function() {
         };
     
         // Handle errors.
-        request.onerror = tDB.onerror;
+        request.onerror = sDB.onerror;
     };
     /**
      * Delete a todo item.
      */
-    tDB.deleteTodo = function(id, callback) {
+    sDB.deleteTodo = function(id, callback) {
         var db = datastore;
         var transaction = db.transaction(['todo'], 'readwrite');
         var objStore = transaction.objectStore('todo');
@@ -135,13 +135,13 @@ var todoDB = (function() {
         }
     };
   
-    // Export the tDB object.
-    return tDB;
+    // Export the sDB object.
+    return sDB;
 }());
 
-// todoDB.open(function() {
+// sessionDB.open(function() {
 //     console.log("Db opened");
 // });
-// setTimeout(function(){todoDB.createTodo("Test", function(todo) {
+// setTimeout(function(){sessionDB.createTodo("Test", function(todo) {
 //     console.log(todo);
 // });}, 300);
