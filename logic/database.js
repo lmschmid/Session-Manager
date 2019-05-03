@@ -82,7 +82,6 @@ var extDB = (function() {
         var transaction = db.transaction(['sessions'], 'readwrite');
     
         var objStore = transaction.objectStore('sessions');
-        var clear = objStore.clear();
     
         // Create an object for the todo item.
         var session = {
@@ -95,7 +94,8 @@ var extDB = (function() {
     
         // Handle a successful datastore put.
         request.onsuccess = function(e) {
-            callback(session);
+            console.log("Added "+title+" successfully");
+            callback();
         };
     
         // Handle errors.
@@ -154,7 +154,7 @@ var extDB = (function() {
     /**
      * Delete a single tab from session.
      */
-    eDB.deleteTabFromSession = function(title, deleteTab) {
+    eDB.deleteTabFromSession = function(title, deleteTabIndex) {
         var db = datastore;
         var transaction = db.transaction(['sessions'], 'readwrite');
         var objStore = transaction.objectStore('sessions');
@@ -164,13 +164,7 @@ var extDB = (function() {
             var session = getRequest.result;
             var data = session.data;
 
-            for (var tabIndex in data.tabs) {
-                var tab = data.tabs[tabIndex];
-                if (tab.url === deleteTab.url && tab.title === deleteTab.title) {
-                    data.tabs.splice(tabIndex, 1);
-                    break;
-                }
-            }
+            data.tabs.splice(deleteTabIndex, 1);
 
             eDB.createSession(title, data, function (newSession) {
                 console.log("New session post deleteTab");
@@ -210,3 +204,35 @@ var extDB = (function() {
     // Export the eDB object.
     return eDB;
 }());
+
+// extDB.open(function() {
+//     console.log("Db opened");
+// });
+// setTimeout(function() {
+//     extDB.clearSessions();
+// },
+// 300);
+// setTimeout(function() {
+//         extDB.createSession("TestSession", {tabs:["www.google.com", "www.facebook.com"], createDate: "2019-05-01"},);
+//     },
+// 500);
+// setTimeout(function() {
+//     extDB.deleteTabFromSession("TestSession", "testTab");
+// },
+// 650);
+// setTimeout(function() {
+//     extDB.addTabToSession("TestSession", "www.github.com");
+// },
+// 800);
+// setTimeout(function() {
+//     extDB.createSession("TestSession", {urls:["www.facebook.com"], createDate: "1999-02-01"}, function(session) {
+//         console.log(session);
+//     });
+// },
+// 1000);
+// setTimeout(function() {
+//     extDB.fetchSessions(function(session) {
+//         console.log(session);
+//     });
+// },
+// 1300);

@@ -1,18 +1,6 @@
-import { addSessionToStorage, getSavedSessions, clearSessions,
-        setActiveListView, deleteSessionFromStorage,deleteTabFromStorage,
-        addTabToStorage, replaceSessionData }
-        from "../logic/sessionStorage.js";
 import { shouldTabsLoad, shouldRestoreWindow } from "../logic/settingsStorage.js";
 import { extDB } from "../logic/database.js";
 
-extDB.open(function() {
-    console.log("Db opened");
-});
-setTimeout(function() {
-        extDB.createSession("Test", function(session) {
-            console.log(session);
-        });
-    }, 1000);
 
 // Zoom constants. Define Max, Min, increment and default values
 const ZOOM_INCREMENT = 0.2;
@@ -50,6 +38,10 @@ function openTab(url) {
     });
 }
 
+function logResult(r) {
+    console.log(r);
+}
+
 /** 
  * For use with browser.tabs.discard
  */
@@ -83,7 +75,7 @@ function createOptionsMenu(sessionName, session) {
 
     openInCurrentLink.textContent = "Add to current window";
     openInCurrentLink.setAttribute('href', "#");
-    openInCurrentLink.addEventListener("click", openSessionInCurrent.bind(null, session["urls"]));
+    openInCurrentLink.addEventListener("click", openSessionInCurrent.bind(null, session.tabs));
 
     replaceCurrentLink.textContent = "Close current window, open new";
     replaceCurrentLink.setAttribute('href', "#");
@@ -146,9 +138,10 @@ function createListSection(sessionName, session) {
     let linkList = document.createElement('div');
     linkList.className = 'link-list';
 
-    for (let tabInfo in session["urls"]) {
-        let url = session["urls"][tabInfo]["url"];
-        let title = session["urls"][tabInfo]["title"];
+    for (let tabIndex in session.tabs) {
+        let tab = session.tabs[tabIndex];
+        let url = tab.url;
+        let title = tab.title;
         let listElem = document.createElement('li');
         let urlField = document.createElement('span');
         let icon = document.createElement('img');
@@ -161,8 +154,8 @@ function createListSection(sessionName, session) {
         urlField.textContent = title;
         urlField.addEventListener("click", openTab.bind(null, url));
 
-        if (session["urls"][tabInfo].icon) {
-            let iconUrl = session["urls"][tabInfo]["icon"];
+        if (tab.icon) {
+            let iconUrl = tab.icon;
             listElem.style.listStyleType = 'none';
 
             urlField.style.left = '-4px';
@@ -180,7 +173,7 @@ function createListSection(sessionName, session) {
 
         deleteButton.className = "delete-tab-button mat-button";
         deleteButton.textContent = "-";
-        deleteButton.addEventListener("click", deleteTab.bind(null, sessionName, tabInfo));
+        deleteButton.addEventListener("click", deleteTab.bind(null, sessionName, tabIndex));
 
         deleteWrapper.appendChild(deleteButton);
         
@@ -243,7 +236,7 @@ function addSessionToPopup(sessionName, session) {
  * retrieve past sessions and add cards to popup
  */
 function populateSessions() {
-    getSavedSessions().then((sessions) => {
+    extDB.fetchSessions(function(sessions) {
         console.log("populateSessions: ", sessions);
         let sessionsList = document.getElementById('sessions-list');
         let savedSessions = document.createDocumentFragment();
@@ -252,10 +245,10 @@ function populateSessions() {
 
         let sessionNames = Object.getOwnPropertyNames(sessions);
 
-        for (let sessionName of sessionNames) {
-        let newCard = createSessionCard(sessionName, sessions[sessionName]);
+        for (var session of sessions) {
+            let newCard = createSessionCard(session.title, session.data);
         
-        savedSessions.appendChild(newCard);
+            savedSessions.appendChild(newCard);
         }
 
         sessionsList.appendChild(savedSessions);
@@ -263,9 +256,8 @@ function populateSessions() {
 }
 
 function replaceSession(sessionName) {
-    getCurrentURLs().then((sessionURLs) => {
-        replaceSessionData(sessionName, sessionURLs);
-        populateSessions();
+    getCurrentSession().then((sessionData) => {
+        extDB.createSession(sessionName, sessionData, populateSessions);
     });
 }
 
@@ -273,31 +265,34 @@ function addTab(sessionName) {
     getCurrentWindowTabs().then((tabs) => {
         for (var tab of tabs) {
             if (!(tab.url.includes("about:", 0)) && tab.active) {
-                let tabInfo = {url:tab.url, title:tab.title, icon:tab.favIconUrl};
-                addTabToStorage(sessionName, tabInfo);
-                populateSessions();
+                let tabData = {url:tab.url, title:tab.title, icon:tab.favIconUrl};
+                extDB.addTabToSession(sessionName, tabData);
                 break;
             }
         }
+        populateSessions();
     });
 }
 
+// TODO: change all these to interact with indexedDB
+
 function deleteTab(sessionName, tab) {
-    deleteTabFromStorage(sessionName, tab)
+    extDB.deleteTabFromSession(sessionName, tab);
     populateSessions();
 }
 
 function deleteSession(sessionName) {
-    deleteSessionFromStorage(sessionName);
-    populateSessions();
+    extDB.deleteSession(sessionName).then(() => {
+        populateSessions();
+    });
 }
 
 function openSession(session) {
     let rawURLs = [];
     var createData;
 
-    for (var tab in session["urls"]) {
-        rawURLs.push(session["urls"][tab]["url"]);
+    for (var tab of session.tabs) {
+        rawURLs.push(tab.url);
     }
 
     if (shouldRestore) {
@@ -320,10 +315,10 @@ function openSession(session) {
     sending.then(handleResponse, handleError);
 }
 
-function openSessionInCurrent(urls) {
+function openSessionInCurrent(tabs) {
     let rawURLs = [];
-    for (var tab in urls) {
-        rawURLs.push(urls[tab]["url"]);
+    for (var tab of tabs) {
+        rawURLs.push(tab.url);
     }
     for (var url of rawURLs) {
         let createData = {
@@ -338,17 +333,17 @@ function openSessionInCurrent(urls) {
     }
 }
 
-function replaceCurrentWindow(urls) {
+function replaceCurrentWindow(session) {
     browser.windows.getCurrent().then((window) => {
         browser.windows.remove(window.id);
-        openSession(urls);
+        openSession(session);
     });
 }
 
 function getCurrentWindowTabs() {
     return browser.tabs.query({currentWindow: true});
 }
-function getCurrentURLs() {
+function getCurrentTabs() {
     return getCurrentWindowTabs().then((tabs) => {
     var urls = [];
     for (var tab of tabs) {
@@ -375,31 +370,56 @@ function filterSessions(filterString) {
     }
 }
 
+function getCurrentSession() {
+    return getCurrentTabs().then((sessionTabs) => {
+        return browser.windows.getCurrent().then((currWindow) => {
+            var windowSettings = {
+                height: currWindow.height,
+                incognito: currWindow.incognito,
+                left: currWindow.left,
+                width: currWindow.width
+            };
+            var sessionData = { tabs: sessionTabs,
+                                createDate: new Date().toJSON().slice(0,10),
+                                windowSettings: windowSettings };
+
+            return sessionData;
+        });
+    });
+}
+
 let searchBar = document.getElementById('search-bar');
 searchBar.addEventListener('input', async (e) => {
     let filterString = searchBar.value;
     filterSessions(filterString);
 });
 
+function openDatabaseAndPopulate() {
+    extDB.open(function() {
+        console.log("Db opened");
+    });
+    setTimeout(function() {
+        populateSessions();
+    },
+    300);
+}
 
-document.addEventListener("DOMContentLoaded", populateSessions);
+
+document.addEventListener("DOMContentLoaded", openDatabaseAndPopulate);
 document.addEventListener("click", async (e) => {
 
     if (e.target.id === "save-button") {
         let sessionName = document.getElementById('name-input').value;
-        console.log(sessionName);
         if (sessionName === "") {
             console.log("empty name, not saving");
         }
         else {
             document.getElementById('name-input').value = '';
-            getCurrentURLs().then((sessionURLs) => {
-                browser.windows.getCurrent().then((currWindow) => {
-                    addSessionToStorage(sessionURLs, sessionName, currWindow).then((session) => {
-                        addSessionToPopup(sessionName, session)
-                    });
+                getCurrentSession().then((sessionData) => {
+                    console.log("Saving session "+sessionName);
+                    console.log(sessionData);
+                    extDB.createSession(sessionName, sessionData, populateSessions);
                 });
-            });
         }
     } 
     else if (e.target.id === 'search-button') {
