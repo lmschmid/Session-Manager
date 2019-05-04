@@ -1,5 +1,6 @@
 import { shouldTabsLoad, shouldRestoreWindow } from "../logic/settingsStorage.js";
-import { extDB } from "../logic/database.js";
+import { sessionsDB } from "../storage/sessionDB.js";
+import { listviewDB } from "../storage/listviewDB.js";
 
 
 // Zoom constants. Define Max, Min, increment and default values
@@ -16,11 +17,11 @@ shouldRestoreWindow().then((val) => {shouldRestore = val;});
  * opens html page in browser of list of tabs in session
  */
 function openListView(sessionName, session) {
-    browser.tabs.create({
-        url:"/listview/listview.html"
-    });
-
-    setActiveListView(sessionName, session["urls"]);
+    var openListTab = function () {browser.tabs.create({
+            url:"/listview/listview.html"
+        });
+    }
+    listviewDB.setActiveListView(sessionName, session.tabs, openListTab);
 }
 
 /** 
@@ -236,7 +237,7 @@ function addSessionToPopup(sessionName, session) {
  * retrieve past sessions and add cards to popup
  */
 function populateSessions() {
-    extDB.fetchSessions(function(sessions) {
+    sessionsDB.fetchSessions(function(sessions) {
         console.log("populateSessions: ", sessions);
         let sessionsList = document.getElementById('sessions-list');
         let savedSessions = document.createDocumentFragment();
@@ -257,7 +258,7 @@ function populateSessions() {
 
 function replaceSession(sessionName) {
     getCurrentSession().then((sessionData) => {
-        extDB.createSession(sessionName, sessionData, populateSessions);
+        sessionsDB.createSession(sessionName, sessionData, populateSessions);
     });
 }
 
@@ -266,7 +267,7 @@ function addTab(sessionName) {
         for (var tab of tabs) {
             if (!(tab.url.includes("about:", 0)) && tab.active) {
                 let tabData = {url:tab.url, title:tab.title, icon:tab.favIconUrl};
-                extDB.addTabToSession(sessionName, tabData, populateSessions);
+                sessionsDB.addTabToSession(sessionName, tabData, populateSessions);
                 break;
             }
         }
@@ -276,11 +277,11 @@ function addTab(sessionName) {
 
 // TODO: change all these to interact with indexedDB
 function deleteTab(sessionName, tab) {
-    extDB.deleteTabFromSession(sessionName, tab, populateSessions);
+    sessionsDB.deleteTabFromSession(sessionName, tab, populateSessions);
 }
 
 function deleteSession(sessionName) {
-    extDB.deleteSession(sessionName, populateSessions);
+    sessionsDB.deleteSession(sessionName, populateSessions);
 }
 
 function openSession(session) {
@@ -391,13 +392,10 @@ searchBar.addEventListener('input', async (e) => {
 });
 
 function openDatabaseAndPopulate() {
-    extDB.open(function() {
-        console.log("Db opened");
+    listviewDB.open(function () {
+        console.log("listviewDB opened");
     });
-    setTimeout(function() {
-        populateSessions();
-    },
-    300);
+    sessionsDB.open(populateSessions);
 }
 
 
@@ -414,7 +412,7 @@ document.addEventListener("click", async (e) => {
                 getCurrentSession().then((sessionData) => {
                     console.log("Saving session "+sessionName);
                     console.log(sessionData);
-                    extDB.createSession(sessionName, sessionData, populateSessions);
+                    sessionsDB.createSession(sessionName, sessionData, populateSessions);
                 });
         }
     } 
