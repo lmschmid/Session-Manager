@@ -2,22 +2,25 @@ import { clearSessions, restoreStorageFromFile, writeToLocalFile }
          from "../logic/sessionStorage.js";
 import { setShouldTabsLoad, setShouldRestoreWindow, shouldTabsLoad,
          shouldRestoreWindow } from "../logic/settingsStorage.js";
+import { extDB } from "../storage/extDB.js";
 
 
 function populateToggleSettings() {
     let toggleWindowRestore = document.getElementById("window-settings");
     let toggleLazyTabs = document.getElementById("lazy-tabs");
 
-    shouldTabsLoad().then((shouldLoad) => {
-        if (!shouldLoad) {
-            toggleLazyTabs.checked = true;
-        }
-    });
-
-    shouldRestoreWindow().then((shouldRestore) => {
-        if (shouldRestore) {
-            toggleWindowRestore.checked = true;
-        }
+    extDB.open(function () {
+        extDB.getSetting('shouldLoad', function (shouldLoad) {
+            console.log(shouldLoad.state);
+            if (!shouldLoad.state) {
+                toggleLazyTabs.checked = true;
+            }
+        });
+        extDB.getSetting('shouldRestore', function (shouldRestore) {
+            if (shouldRestore.state) {
+                toggleWindowRestore.checked = true;
+            }
+        });
     });
 }
 
@@ -60,13 +63,17 @@ document.addEventListener("click", async (e) => {
         clearSessions();
     }
     else if (e.target.id == "window-settings") {
-        shouldRestoreWindow().then((shouldRestore) => {
-            setShouldRestoreWindow(!shouldRestore);
+        extDB.getSetting('shouldRestore', function (shouldLoad) {
+            extDB.setSetting('shouldRestore', !shouldLoad.state, function () {
+                console.log("Set shouldRestore")
+            });
         });
     }
     else if (e.target.id == "lazy-tabs") {
-        shouldTabsLoad().then((shouldLoad) => {
-            setShouldTabsLoad(!shouldLoad);
+        extDB.getSetting('shouldLoad', function (shouldLoad) {
+            extDB.setSetting('shouldLoad', !shouldLoad.state, function () {
+                console.log("Set shouldLoad")
+            });
         });
     }
     else if (e.target.id == "save-button") {

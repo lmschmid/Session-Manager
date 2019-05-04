@@ -1,21 +1,17 @@
-import { listviewDB } from "../storage/listviewDB.js"; 
-import { getActiveListView } from "../logic/sessionStorage.js";
+import { extDB } from "../storage/extDB.js"; 
 
 function openLink(url) {
     browser.tabs.create({url:url});
 }
 
 function filterSessions(filterString) {
-    console.log("in filterSessions");
     let listElems = document.getElementById('list-elems');
     listElems.textContent = "";
-    console.log("filterString: "+filterString);
 
-    listviewDB.getActiveListView(function (session) {
+    extDB.getActiveListView(function (session) {
         for (var tab of session.tabs) {
             let title = tab.title;
             if (title.toUpperCase().includes(filterString.toUpperCase())) {
-                console.log("title: "+title);
 
                 let tabLink = constructSessionLink(tab);
                 listElems.appendChild(tabLink);
@@ -56,13 +52,10 @@ function constructSessionLink(tab) {
 function listSessions() {
     let listElems = document.getElementById('list-elems');
 
-    listviewDB.open(function () {
-        listviewDB.getActiveListView(function (session) {
-            console.log(session);
+    extDB.open(function () {
+        extDB.getActiveListView(function (session) {
             document.title = session.sessionName;
 
-            console.log("listSessions");
-            console.log(session);
             for (var tab of session.tabs) {
                 let tabLink = constructSessionLink(tab)
                 listElems.appendChild(tabLink);
