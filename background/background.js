@@ -1,3 +1,5 @@
+var gettingStoredStatsLocal = browser.storage.local.get();
+
 function onDiscarded() {
     console.log(`Discarded`);
 }
@@ -15,15 +17,13 @@ function discardTabs(window, shouldLoad) {
     }
 }
 
-
 function handleMessage(request, sender, sendResponse) {
+    console.log(request);
     if (request.openSession) {
         let creating = browser.windows.create(request.openSession.createData)
         .then((window) => {
             discardTabs(window, request.openSession.shouldLoad);
         });
-    } else if (request.setResults) {
-        browser.storage.local.set(request.setResults.results);
     }
 }
 
