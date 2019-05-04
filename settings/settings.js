@@ -1,8 +1,5 @@
-import { clearSessions, restoreStorageFromFile, writeToLocalFile }
-         from "../logic/sessionStorage.js";
-import { setShouldTabsLoad, setShouldRestoreWindow, shouldTabsLoad,
-         shouldRestoreWindow } from "../logic/settingsStorage.js";
 import { extDB } from "../storage/extDB.js";
+import { saveAs } from "../dependencies/FileSaver.js";
 
 
 function populateToggleSettings() {
@@ -24,6 +21,22 @@ function populateToggleSettings() {
     });
 }
 
+function writeToLocalFile(fileName) {
+    extDB.fetchAllStorage(function(results) {
+        console.log(results);
+        if (Object.keys(results).length === 0 &&
+             results.constructor === Object) {
+            // TODO: display some message of nothing to save
+            return;
+        }
+
+        var jsonString = JSON.stringify(results, null, 2);
+        console.log(jsonString);
+
+        var blob = new Blob([jsonString], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, fileName+".json");
+    });
+}
 
 let restoreSessionInput = document.getElementById('json-button');
 restoreSessionInput.addEventListener("change", handleFiles, false);
@@ -44,12 +57,14 @@ function handleFiles() {
         let resultsKeys = Object.keys(results);
         console.log(resultsKeys);
 
-        if (resultsKeys.length != 3 || resultsKeys[0] != "listview" ||
-            resultsKeys[1] != "sessions" || resultsKeys[2] != "settings") {
+        if (resultsKeys.length != 2 || resultsKeys[0] != "sessions" ||
+            resultsKeys[1] != "settings") {
             // TODO tell user to input valid file
+            console.log("invalid file");
         } else {
-            restoreStorageFromFile(results);
-            alert("Sessions restored successfully!");
+            // restoreStorageFromFile(results);
+            // alert("Sessions restored successfully!");
+            extDB.restoreFromJSON(results);
         }
     }
 
@@ -60,7 +75,9 @@ const saveInput = document.getElementById('save-name-input');
 document.addEventListener("DOMContentLoaded", populateToggleSettings);
 document.addEventListener("click", async (e) => {
     if (e.target.id == "clear-all-button") {
-        clearSessions();
+        extDB.clearSessions(function () {
+            alert("Sessions cleared successfully");
+        });
     }
     else if (e.target.id == "window-settings") {
         extDB.getSetting('shouldRestore', function (shouldLoad) {

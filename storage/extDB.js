@@ -67,6 +67,44 @@ var extDB = (function() {
             console.log(err);
         }
     };
+    /*************************************************************************
+     * Misc/All section
+     *************************************************************************/
+    eDB.restoreFromJSON = function(jsonData, callback) {
+        var db = datastore;
+
+        console.log(jsonData);
+        for (const key of Object.keys(jsonData)) {
+            var trx = db.transaction([key], 'readwrite');
+            var objStore = trx.objectStore(key);
+
+            if (key === 'sessions') {
+                console.log(key);
+                eDB.clearSessions(function() {
+                    for (var session of jsonData[key]) {
+                        eDB.createSession(session.title, session.data, function () {});
+                    }
+                });
+            } else if (key === 'settings') {
+                console.log(key);
+                for (var setting of jsonData[key]) {
+                    eDB.setSetting(setting.setting, setting.state, function () {});
+                }
+            }
+        }
+    }
+
+    eDB.fetchAllStorage = function(callback) {
+        eDB.fetchSettings(function (settings) {
+            eDB.fetchSessions(function (sessions) {
+                var results = {
+                    sessions: sessions,
+                    settings: settings
+                };
+                callback(results);
+            });
+        });
+    }
 
     /*************************************************************************
      * Sessions section
@@ -74,7 +112,7 @@ var extDB = (function() {
     /**
      * Clears all sessions.
      */
-    eDB.clearSessions = function() {
+    eDB.clearSessions = function(callback) {
         var db = datastore;
     
         var transaction = db.transaction(['sessions'], 'readwrite');
@@ -85,6 +123,7 @@ var extDB = (function() {
         // Handle a successful datastore put.
         clear.onsuccess = function(e) {
             console.log("Sessions cleared from db.");
+            callback();
         };
     
         // Handle errors.
@@ -280,6 +319,38 @@ var extDB = (function() {
         // Handle errors.
         request.onerror = eDB.onerror;
     };
+    /**
+     * Fetch all of the settings in the datastore.
+     */
+    eDB.fetchSettings = function(callback) {
+        var db = datastore;
+        var transaction = db.transaction(['settings'], 'readwrite');
+        var objStore = transaction.objectStore('settings');
+    
+        var keyRange = IDBKeyRange.lowerBound(0);
+        // Iterates through an object store by primary key
+        var cursorRequest = objStore.openCursor(keyRange);
+    
+        var settings = [];
+    
+        cursorRequest.onsuccess = function(e) {
+            var result = e.target.result;
+        
+            if (!!result == false) {
+                return;
+            }
+        
+            settings.push(result.value);
+        
+            result.continue();
+        };
+
+        transaction.oncomplete = function(e) {
+            callback(settings);
+        };
+    
+        cursorRequest.onerror = eDB.onerror;
+    };
   
     /*************************************************************************
      * Listview section
@@ -325,7 +396,6 @@ var extDB = (function() {
         // Handle errors.
         request.onerror = eDB.onerror;
     };
-
     // Export the eDB object.
     return eDB;
 }());
