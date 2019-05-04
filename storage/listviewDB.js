@@ -9,6 +9,7 @@ var listviewDB = (function() {
      * Open a connection to the datastore.
      */
     eDB.open = function(callback) {
+        console.log("opening listviewDB");
         // Database version.
         var version = 4;
     
@@ -22,6 +23,9 @@ var listviewDB = (function() {
             e.target.transaction.onerror = eDB.onerror;
         
             // Delete old datastores when upgrading
+            if (db.objectStoreNames.contains('sessions')) {
+                db.deleteObjectStore('sessions');
+            }
             if (db.objectStoreNames.contains('settings')) {
                 db.deleteObjectStore('settings');
             }
@@ -30,6 +34,9 @@ var listviewDB = (function() {
             }
         
             // Create the datastores
+            var sessionsStore = db.createObjectStore('sessions', {
+                keyPath: 'title'
+            });
             var settingsStore = db.createObjectStore('settings', {
                 keyPath: 'setting'
             });
@@ -56,9 +63,13 @@ var listviewDB = (function() {
 
         // Create an object for the todo item.
         var session = {
-            title: sessionName,
-            tabs: tabs,
+            title: 'active',
+            sessionName: sessionName,
+            tabs: tabs
         };
+
+        console.log(objStore);
+        console.log(session);
     
         // Create the datastore request.
         var request = objStore.put(session);
@@ -67,6 +78,23 @@ var listviewDB = (function() {
         request.onsuccess = function(e) {
             console.log("Added listview "+sessionName);
             callback();
+        };
+    
+        // Handle errors.
+        request.onerror = eDB.onerror;
+    };
+
+    eDB.getActiveListView = function(callback) {
+        var db = datastore;
+        var transaction = db.transaction(['listview'], 'readwrite');
+        var objStore = transaction.objectStore('listview');
+    
+        // Create the datastore request.
+        var request = objStore.get('active');
+    
+        // Handle a successful datastore put.
+        request.onsuccess = function(e) {
+            callback(request.result);
         };
     
         // Handle errors.

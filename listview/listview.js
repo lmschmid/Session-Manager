@@ -1,4 +1,5 @@
-import { getActiveListView } from "../logic/sessionStorage.js"; 
+import { listviewDB } from "../storage/listviewDB.js"; 
+import { getActiveListView } from "../logic/sessionStorage.js";
 
 function openLink(url) {
     browser.tabs.create({url:url});
@@ -10,8 +11,8 @@ function filterSessions(filterString) {
     listElems.textContent = "";
     console.log("filterString: "+filterString);
 
-    getActiveListView().then((session) => {
-        for (var tab of session.urls) {
+    listviewDB.getActiveListView(function (session) {
+        for (var tab of session.tabs) {
             let title = tab.title;
             if (title.toUpperCase().includes(filterString.toUpperCase())) {
                 console.log("title: "+title);
@@ -54,15 +55,19 @@ function constructSessionLink(tab) {
 
 function listSessions() {
     let listElems = document.getElementById('list-elems');
-    getActiveListView().then((session) => {
-        document.title = session.sessionName;
 
-        console.log("listSessions");
-        console.log(session);
-        for (var tab of session.urls) {
-            let tabLink = constructSessionLink(tab)
-            listElems.appendChild(tabLink);
-        }
+    listviewDB.open(function () {
+        listviewDB.getActiveListView(function (session) {
+            console.log(session);
+            document.title = session.sessionName;
+
+            console.log("listSessions");
+            console.log(session);
+            for (var tab of session.tabs) {
+                let tabLink = constructSessionLink(tab)
+                listElems.appendChild(tabLink);
+            }
+        });
     });
 }
 

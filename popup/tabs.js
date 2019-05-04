@@ -392,10 +392,10 @@ searchBar.addEventListener('input', async (e) => {
 });
 
 function openDatabaseAndPopulate() {
+    sessionsDB.open(populateSessions);
     listviewDB.open(function () {
         console.log("listviewDB opened");
     });
-    sessionsDB.open(populateSessions);
 }
 
 

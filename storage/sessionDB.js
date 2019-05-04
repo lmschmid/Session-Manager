@@ -9,6 +9,7 @@ var sessionsDB = (function() {
      * Open a connection to the datastore.
      */
     eDB.open = function(callback) {
+        console.log("opening sessionsDB");
         // Database version.
         var version = 4;
     
@@ -25,9 +26,21 @@ var sessionsDB = (function() {
             if (db.objectStoreNames.contains('sessions')) {
                 db.deleteObjectStore('sessions');
             }
+            if (db.objectStoreNames.contains('settings')) {
+                db.deleteObjectStore('settings');
+            }
+            if (db.objectStoreNames.contains('listview')) {
+                db.deleteObjectStore('listview');
+            }
         
             // Create the datastores
             var sessionsStore = db.createObjectStore('sessions', {
+                keyPath: 'title'
+            });
+            var settingsStore = db.createObjectStore('settings', {
+                keyPath: 'setting'
+            });
+            var listviewStore = db.createObjectStore('listview', {
                 keyPath: 'title'
             });
         };
@@ -40,7 +53,9 @@ var sessionsDB = (function() {
         };
     
         // Handle errors when opening the datastore.
-        request.onerror = eDB.onerror;
+        request.onerror = function(err) {
+            console.log(err);
+        }
     };
     /**
      * Clears all sessions.
