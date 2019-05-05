@@ -97,17 +97,25 @@ function createInfoSection (sessionName, session) {
     var infoSection = document.createElement('div');
     infoSection.classList.add("info-section", "split-left");
 
+    let nameContainer = document.createElement('div');
     let nameField = document.createElement('h2');
+    let dateContainer = document.createElement('div');
     let dateField = document.createElement('small');
     let deleteButton = document.createElement('button');
     let openButton = document.createElement('button');
     let options = createOptionsMenu(sessionName, session);
 
+    nameContainer.className = "name-container";
     nameField.className = "session-link";
     nameField.textContent = sessionName;
+    nameContainer.appendChild(nameField);
 
+    dateContainer.className = "date-container";
     dateField.className = "date-field";
     dateField.textContent = session["createDate"];
+    dateContainer.appendChild(dateField);
+
+    nameContainer.appendChild(dateContainer);
 
     openButton.className = "open-button mat-button";
     openButton.textContent = "Open";
@@ -119,8 +127,7 @@ function createInfoSection (sessionName, session) {
     deleteButton.setAttribute('href', "#");
     deleteButton.addEventListener("click", deleteSession.bind(null, sessionName));
 
-    infoSection.appendChild(nameField);
-    infoSection.appendChild(dateField);
+    infoSection.appendChild(nameContainer);
     infoSection.appendChild(openButton);
     infoSection.appendChild(deleteButton);
     infoSection.appendChild(options);
