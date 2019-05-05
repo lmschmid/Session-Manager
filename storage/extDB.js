@@ -1,5 +1,15 @@
+import { fetchSessions, clearSessions, createSession, deleteSession,
+         deleteTabFromSession, addTabToSession }
+         from "./sessionsDB.js";
+import { setSetting, getSetting, fetchSettings } from "./settingsDB.js";
+import { setActiveListView, getActiveListView } from "./listviewDB.js";
+
 export { extDB };
 
+
+// Need a better way to get to session when there are a lot
+// ex: i always delete when i get to three sessions, havent done more
+//      -keyboard shortcuts?
 
 var extDB = (function() {
     var eDB = {};
@@ -45,6 +55,7 @@ var extDB = (function() {
                 keyPath: 'title'
             });
 
+            // restore default settings when upgrading
             setTimeout(function () {
                 eDB.setSetting('shouldLoad', false, function () {
                     console.log("set shouldLoad");
@@ -58,6 +69,7 @@ var extDB = (function() {
         request.onsuccess = function(e) {
             // Get a reference to the DB.
             datastore = e.target.result;
+            eDB.datastore = datastore;
         
             callback();
         };
@@ -79,14 +91,12 @@ var extDB = (function() {
             var objStore = trx.objectStore(key);
 
             if (key === 'sessions') {
-                console.log(key);
                 eDB.clearSessions(function() {
                     for (var session of jsonData[key]) {
                         eDB.createSession(session.title, session.data, function () {});
                     }
                 });
             } else if (key === 'settings') {
-                console.log(key);
                 for (var setting of jsonData[key]) {
                     eDB.setSetting(setting.setting, setting.state, function () {});
                 }
@@ -112,301 +122,57 @@ var extDB = (function() {
     /**
      * Clears all sessions.
      */
-    eDB.clearSessions = function(callback) {
-        var db = datastore;
-    
-        var transaction = db.transaction(['sessions'], 'readwrite');
-    
-        var objStore = transaction.objectStore('sessions');
-        var clear = objStore.clear();
-    
-        // Handle a successful datastore put.
-        clear.onsuccess = function(e) {
-            console.log("Sessions cleared from db.");
-            callback();
-        };
-    
-        // Handle errors.
-        clear.onerror = eDB.onerror;
-    };
+    eDB.clearSessions = clearSessions.bind(eDB);
+
     /**
      * Create a new session. Also can be used to alter existing session.
      */
-    eDB.createSession = function(title, sessionData, callback) {
-        var db = datastore;
-    
-        var transaction = db.transaction(['sessions'], 'readwrite');
-    
-        var objStore = transaction.objectStore('sessions');
-    
-        // Create an object for the todo item.
-        var session = {
-            title: title,
-            data: sessionData,
-        };
-    
-        // Create the datastore request.
-        var request = objStore.put(session);
-    
-        // Handle a successful datastore put.
-        request.onsuccess = function(e) {
-            console.log("Added "+title+" successfully");
-            callback();
-        };
-    
-        // Handle errors.
-        request.onerror = eDB.onerror;
-    };
+    eDB.createSession = createSession.bind(eDB);
+
     /**
      * Fetch all of the sessions in the datastore.
      */
-    eDB.fetchSessions = function(callback) {
-        var db = datastore;
-        var transaction = db.transaction(['sessions'], 'readwrite');
-        var objStore = transaction.objectStore('sessions');
+    eDB.fetchSessions = fetchSessions.bind(eDB);
     
-        var keyRange = IDBKeyRange.lowerBound(0);
-        // Iterates through an object store by primary key
-        var cursorRequest = objStore.openCursor(keyRange);
-    
-        var sessions = [];
-    
-        cursorRequest.onsuccess = function(e) {
-            var result = e.target.result;
-        
-            if (!!result == false) {
-                return;
-            }
-        
-            sessions.push(result.value);
-        
-            result.continue();
-        };
-
-        transaction.oncomplete = function(e) {
-            callback(sessions);
-        };
-    
-        cursorRequest.onerror = eDB.onerror;
-    };
     /**
      * Delete a session.
      */
-    eDB.deleteSession = function(title, callback) {
-        var db = datastore;
-        var transaction = db.transaction(['sessions'], 'readwrite');
-        var objStore = transaction.objectStore('sessions');
-    
-        var request = objStore.delete(title);
-    
-        request.onsuccess = function(e) {
-            console.log("Deleted session "+title);
-            callback();
-        }
-    
-        request.onerror = function(e) {
-            console.log(e);
-        }
-    };
+    eDB.deleteSession = deleteSession.bind(eDB);
+
     /**
      * Delete a single tab from session.
      */
-    eDB.deleteTabFromSession = function(title, deleteTabIndex, callback) {
-        var db = datastore;
-        var transaction = db.transaction(['sessions'], 'readwrite');
-        var objStore = transaction.objectStore('sessions');
-        var getRequest = objStore.get(title);
-        
-        getRequest.onsuccess = function(e) {
-            var session = getRequest.result;
-            var data = session.data;
+    eDB.deleteTabFromSession = deleteTabFromSession.bind(eDB);
 
-            data.tabs.splice(deleteTabIndex, 1);
-
-            eDB.createSession(title, data, callback);
-        }
-    
-        getRequest.onerror = function(e) {
-            console.log(e);
-        }
-    };
     /**
      * Add a single tab to session.
      */
-    eDB.addTabToSession = function(title, addTab, callback) {
-        var db = datastore;
-        var transaction = db.transaction(['sessions'], 'readwrite');
-        var objStore = transaction.objectStore('sessions');
-        var getRequest = objStore.get(title);
-        
-        getRequest.onsuccess = function(e) {
-            var session = getRequest.result;
+    eDB.addTabToSession = addTabToSession.bind(eDB);
 
-            session.data.tabs.push(addTab);
-
-            eDB.createSession(title, session.data, callback);
-        }
-    
-        getRequest.onerror = function(e) {
-            console.log(e);
-        }
-    };
-
-    eDB.setActiveListView = function(sessionName, tabs, callback) {
-        var db = datastore;
-        var transaction = db.transaction(['listview'], 'readwrite');
-        var objStore = transaction.objectStore('listview');
-
-        // Create an object for the todo item.
-        var session = {
-            title: sessionName,
-            tabs: tabs,
-        };
-    
-        // Create the datastore request.
-        var request = objStore.put(session);
-    
-        // Handle a successful datastore put.
-        request.onsuccess = function(e) {
-            console.log("Added listview "+sessionName);
-            callback();
-        };
-    
-        // Handle errors.
-        request.onerror = eDB.onerror;
-    };
 
     /*************************************************************************
      * Settings section
      *************************************************************************/
-    eDB.setSetting = function(setting, state, callback) {
-        var db = datastore;
-        var transaction = db.transaction(['settings'], 'readwrite');
-        var objStore = transaction.objectStore('settings');
-
-        // Create an object for the todo item.
-        var setting = {
-            setting: setting,
-            state: state
-        };
-    
-        // Create the datastore request.
-        var request = objStore.put(setting);
-    
-        // Handle a successful datastore put.
-        request.onsuccess = function(e) {
-            console.log("Added setting "+setting.setting);
-            callback();
-        };
-    
-        // Handle errors.
-        request.onerror = eDB.onerror;
-    };
-
-    eDB.getSetting = function(setting, callback) {
-        var db = datastore;
-        var transaction = db.transaction(['settings'], 'readwrite');
-        var objStore = transaction.objectStore('settings');
-    
-        // Create the datastore request.
-        var request = objStore.get(setting);
-    
-        // Handle a successful datastore put.
-        request.onsuccess = function(e) {
-            callback(request.result);
-        };
-    
-        // Handle errors.
-        request.onerror = eDB.onerror;
-    };
+    /**
+     * Set state of setting in the datastore.
+     */
+    eDB.setSetting = setSetting.bind(eDB);
+    /**
+     * Get state of setting in the datastore.
+     */
+    eDB.getSetting = getSetting.bind(eDB);
     /**
      * Fetch all of the settings in the datastore.
      */
-    eDB.fetchSettings = function(callback) {
-        var db = datastore;
-        var transaction = db.transaction(['settings'], 'readwrite');
-        var objStore = transaction.objectStore('settings');
-    
-        var keyRange = IDBKeyRange.lowerBound(0);
-        // Iterates through an object store by primary key
-        var cursorRequest = objStore.openCursor(keyRange);
-    
-        var settings = [];
-    
-        cursorRequest.onsuccess = function(e) {
-            var result = e.target.result;
-        
-            if (!!result == false) {
-                return;
-            }
-        
-            settings.push(result.value);
-        
-            result.continue();
-        };
-
-        transaction.oncomplete = function(e) {
-            callback(settings);
-        };
-    
-        cursorRequest.onerror = eDB.onerror;
-    };
+    eDB.fetchSettings = fetchSettings.bind(eDB);
   
     /*************************************************************************
      * Listview section
      *************************************************************************/
-    eDB.setActiveListView = function(sessionName, tabs, callback) {
-        var db = datastore;
-        var transaction = db.transaction(['listview'], 'readwrite');
-        var objStore = transaction.objectStore('listview');
+    eDB.setActiveListView = setActiveListView.bind(eDB);
 
-        // Create an object for the todo item.
-        var session = {
-            title: 'active',
-            sessionName: sessionName,
-            tabs: tabs
-        };
-    
-        // Create the datastore request.
-        var request = objStore.put(session);
-    
-        // Handle a successful datastore put.
-        request.onsuccess = function(e) {
-            console.log("Added listview "+sessionName);
-            callback();
-        };
-    
-        // Handle errors.
-        request.onerror = eDB.onerror;
-    };
+    eDB.getActiveListView = getActiveListView.bind(eDB);
 
-    eDB.getActiveListView = function(callback) {
-        var db = datastore;
-        var transaction = db.transaction(['listview'], 'readwrite');
-        var objStore = transaction.objectStore('listview');
-    
-        // Create the datastore request.
-        var request = objStore.get('active');
-    
-        // Handle a successful datastore put.
-        request.onsuccess = function(e) {
-            callback(request.result);
-        };
-    
-        // Handle errors.
-        request.onerror = eDB.onerror;
-    };
     // Export the eDB object.
     return eDB;
 }());
-
-// extDB.open(function() {
-//     console.log("Db opened");
-// });
-// setTimeout(function() {
-//     extDB.clearSessions();
-// },
-// 300);
-// setTimeout(function() {
-//         extDB.createSession("TestSession", {tabs:["www.google.com", "www.facebook.com"], createDate: "2019-05-01"},);
-//     },
