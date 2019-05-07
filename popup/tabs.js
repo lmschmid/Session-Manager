@@ -7,7 +7,17 @@ const MAX_ZOOM = 3;
 const MIN_ZOOM = 0.3;
 const DEFAULT_ZOOM = 1;
 
+// Macros for sorting mode
+const ALPHA_INC = 0;
+const ALPHA_DEC = 1;
+const TIME_INC = 2;
+const TIME_DEC = 3;
+
+// Store settings so dont have to load from mem every time
 var shouldLoad, shouldRestore;
+
+// Default sorting is most recently added
+var sortMode = TIME_DEC;
 
 /** 
  * opens html page in browser of list of tabs in session
@@ -242,6 +252,7 @@ function addSessionToPopup(sessionName, session) {
 function populateSessions() {
     extDB.fetchSessions(function(sessions) {
         console.log("populateSessions: ", sessions);
+        sessions.sort(compareSessions.bind(null, sortMode));
         let sessionsList = document.getElementById('sessions-list');
         let savedSessions = document.createDocumentFragment();
 
@@ -259,6 +270,22 @@ function populateSessions() {
     });
 }
 
+function compareSessions(sortMode, leftSess, rightSess) {
+    if (sortMode === ALPHA_INC) {
+        return leftSess.title.toLowerCase().localeCompare(
+               rightSess.title.toLowerCase());
+    } else if (sortMode === ALPHA_DEC) {
+        return rightSess.title.toLowerCase().localeCompare(
+               leftSess.title.toLowerCase());
+    } else if (sortMode === TIME_INC) {
+        return leftSess.data.createDate.toLowerCase().localeCompare(
+               rightSess.data.createDate.toLowerCase());
+    } else if (sortMode === TIME_DEC) {
+        return rightSess.data.createDate.toLowerCase().localeCompare(
+               leftSess.data.createDate.toLowerCase());
+    }
+}
+
 function replaceSession(sessionName) {
     getCurrentSession().then((sessionData) => {
         extDB.createSession(sessionName, sessionData, populateSessions);
@@ -274,7 +301,6 @@ function addTab(sessionName) {
                 break;
             }
         }
-        // populateSessions();
     });
 }
 
@@ -380,7 +406,7 @@ function getCurrentSession() {
                 width: currWindow.width
             };
             var sessionData = { tabs: sessionTabs,
-                                createDate: new Date().toJSON().slice(0,10),
+                                createDate: new Date().toLocaleString("en-US"),
                                 windowSettings: windowSettings };
 
             return sessionData;
@@ -426,11 +452,11 @@ document.addEventListener("click", async (e) => {
     } 
     else if (e.target.id === 'search-button') {
         const searchBar = document.getElementById('search-bar');
-        if (searchBar.style.width === '120px') {
+        if (searchBar.style.width === '210px') {
             searchBar.style.width = '0px';
             setTimeout(function() {filterSessions("");searchBar.style.backgroundColor = 'rgb(202, 202, 202)';searchBar.value = "";}, 390);
         } else {
-            searchBar.style.width = '120px';
+            searchBar.style.width = '210px';
             searchBar.style.backgroundColor = 'rgb(235, 235, 235)';
             searchBar.focus();
             searchBar.select();
