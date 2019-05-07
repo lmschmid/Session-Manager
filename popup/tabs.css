@@ -5,18 +5,47 @@ html, body {
 }
 
 /*
- ******* Search are *******
+ ******* Menu area *******
+ */
+.name-menu-div {
+  position: relative;
+  left: 0px;
+  top: 0px;
+}
+.menu-button {
+  position: absolute;
+  transition: background-color 0.3s;
+  background-color: rgb(202, 202, 202);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  margin: auto;
+}
+.menu-button:hover {
+  background-color: rgb(235, 235, 235);
+}
+
+.popup-header {
+  position: relative;
+  left: 40px;
+  font-size: 22px;
+  margin: auto;
+}
+
+/*
+ ******* Search area *******
  */
 .search-div {
   position: absolute;
   right: 0px;
+  margin: auto;
 }
 
 .search-bar {
   display: block;
   position: absolute;
   right: 85px;
-  top: -3px;
   width: 0px;
   height: 30px;
   border: none;
@@ -29,11 +58,12 @@ html, body {
 .search-button {
   position: absolute;
   right: 50px;
-  top: -3px;
   transition: background-color 0.3s;
   background-color: rgb(202, 202, 202);
   border: none;
   border-radius: 50%;
+  width: 30px;
+  height: 30px;
 }
 .search-button:hover {
   background-color: rgb(235, 235, 235);
@@ -45,11 +75,13 @@ html, body {
 .settings-button {
   position: absolute;
   right: 15px;
-  top: 17px;
   transition: background-color 0.3s;
   background-color: rgb(202, 202, 202);
   border: none;
   border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  margin: auto;
 }
 .settings-button:hover {
   background-color: rgb(235, 235, 235);
@@ -87,6 +119,7 @@ html, body {
   margin-block-start: 20px;
   margin-right: 5px;
   position: relative;
+  z-index: 1;
 }
 /* On mouse-over, add a deeper shadow */
 .card:hover {
@@ -111,13 +144,11 @@ html, body {
   right: 0;
   padding-top: 20px;
 }
-
 .info-section {
-  position: absolute;
+  position: relative;
   left: 0;
   box-shadow: 8px 1px 10px -5px rgb(165, 165, 165);
-  z-index: 3;
-
+  z-index: 2;
 }
 .list-section {
   position: absolute;
@@ -135,7 +166,7 @@ html, body {
   left: 0px;
   white-space: nowrap;
   overflow-x: hidden;
-  width: 100px;
+  width: 110px;
   margin: 20px;
   text-overflow: ellipsis;
 }
@@ -149,7 +180,6 @@ html, body {
   position: relative;
   top: -13px;
   left: 0px;
-  /* margin: 20px; */
 }
 
 .date-field {
@@ -185,18 +215,18 @@ html, body {
   border-radius: 10px;
   transition: background-image .3s;
   transition: background-color .3s;
+  z-index: 10;
 }
 
 .options-content {
   display: none;
-  position: relative;
+  position: absolute;
   left: 7px;
   background-color: #f1f1f1;
   min-width: 103px;
   height: auto;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-  overflow: scroll;
+  z-index: 10;
 }
 
 /* Links inside the dropdown */
@@ -207,6 +237,7 @@ html, body {
   font-size: 9px;
   display: block;
   transition: font-size .1s;
+  z-index: 3;
 }
 
 .options-menu:hover {
@@ -220,8 +251,6 @@ html, body {
 /* Show the dropdown menu on hover */
 .options-menu:hover .options-content {display: block;}
 
-/* Change the background color of the dropdown button when the dropdown content is shown */
-.options-menu:hover .options-button {background-color: rgb(33, 66, 94);}
 
 /**
  * List Section

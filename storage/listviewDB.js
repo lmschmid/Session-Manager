@@ -27,7 +27,7 @@ var setActiveListView = function(sessionName, tabs, callback) {
 
 var getActiveListView = function(callback) {
     var db = this.datastore;
-    var transaction = db.transaction(['listview'], 'readwrite');
+    var transaction = db.transaction(['listview'], 'readonly');
     var objStore = transaction.objectStore('listview');
 
     // Create the datastore request.

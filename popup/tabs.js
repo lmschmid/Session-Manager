@@ -128,9 +128,9 @@ function createInfoSection (sessionName, session) {
     deleteButton.addEventListener("click", deleteSession.bind(null, sessionName));
 
     infoSection.appendChild(nameContainer);
+    infoSection.appendChild(options);
     infoSection.appendChild(openButton);
     infoSection.appendChild(deleteButton);
-    infoSection.appendChild(options);
 
     return infoSection;
 }
@@ -426,11 +426,11 @@ document.addEventListener("click", async (e) => {
     } 
     else if (e.target.id === 'search-button') {
         const searchBar = document.getElementById('search-bar');
-        if (searchBar.style.width === '164px') {
+        if (searchBar.style.width === '120px') {
             searchBar.style.width = '0px';
             setTimeout(function() {filterSessions("");searchBar.style.backgroundColor = 'rgb(202, 202, 202)';searchBar.value = "";}, 390);
         } else {
-            searchBar.style.width = '164px';
+            searchBar.style.width = '120px';
             searchBar.style.backgroundColor = 'rgb(235, 235, 235)';
             searchBar.focus();
             searchBar.select();

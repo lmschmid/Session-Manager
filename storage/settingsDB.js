@@ -26,7 +26,7 @@ var setSetting = function(setting, state, callback) {
 
 var getSetting = function(setting, callback) {
     var db = this.datastore;
-    var transaction = db.transaction(['settings'], 'readwrite');
+    var transaction = db.transaction(['settings'], 'readonly');
     var objStore = transaction.objectStore('settings');
 
     // Create the datastore request.
@@ -46,7 +46,7 @@ var getSetting = function(setting, callback) {
  */
 var fetchSettings = function(callback) {
     var db = this.datastore;
-    var transaction = db.transaction(['settings'], 'readwrite');
+    var transaction = db.transaction(['settings'], 'readonly');
     var objStore = transaction.objectStore('settings');
 
     var keyRange = IDBKeyRange.lowerBound(0);

@@ -3,7 +3,7 @@ export { fetchSessions, clearSessions, createSession, fetchSessions,
 
 var fetchSessions = function(callback) {
     var db = this.datastore;
-    var transaction = db.transaction(['sessions'], 'readwrite');
+    var transaction = db.transaction(['sessions'], 'readonly');
     var objStore = transaction.objectStore('sessions');
 
     var keyRange = IDBKeyRange.lowerBound(0);
@@ -83,7 +83,7 @@ var createSession = function(title, sessionData, callback) {
  */
 var fetchSessions = function(callback) {
     var db = this.datastore;
-    var transaction = db.transaction(['sessions'], 'readwrite');
+    var transaction = db.transaction(['sessions'], 'readonly');
     var objStore = transaction.objectStore('sessions');
 
     var keyRange = IDBKeyRange.lowerBound(0);
