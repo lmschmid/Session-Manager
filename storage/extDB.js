@@ -6,6 +6,11 @@ import { setActiveListView, getActiveListView } from "./listviewDB.js";
 
 export { extDB };
 
+// Macros for sorting mode
+const ALPHA_INC = 0;
+const ALPHA_DEC = 1;
+const TIME_INC = 2;
+const TIME_DEC = 3;
 
 // Need a better way to get to session when there are a lot
 // ex: i always delete when i get to three sessions, havent done more
@@ -62,6 +67,9 @@ var extDB = (function() {
                 });
                 eDB.setSetting('shouldRestore', true, function () {
                     console.log("set shouldLoad");
+                });
+                eDB.setSetting('sortMode', TIME_DEC, function () {
+                    console.log("set sortMode");
                 });
             }, 300);
         };

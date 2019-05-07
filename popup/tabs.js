@@ -14,10 +14,8 @@ const TIME_INC = 2;
 const TIME_DEC = 3;
 
 // Store settings so dont have to load from mem every time
-var shouldLoad, shouldRestore;
+var shouldLoad, shouldRestore, sortMode;
 
-// Default sorting is most recently added
-var sortMode = TIME_DEC;
 
 /** 
  * opens html page in browser of list of tabs in session
@@ -421,15 +419,18 @@ searchBar.addEventListener('input', async (e) => {
 });
 
 function openDatabaseAndPopulate() {
-    extDB.open(populateSessions);
-    setTimeout(function () {    
+    extDB.open(function () {
+        extDB.getSetting('sortMode', function (sortSetting) {
+            sortMode = sortSetting.state;
+            populateSessions();
+        });
         extDB.getSetting('shouldLoad', function (loadSetting) {
             shouldLoad = loadSetting.state;
         });
         extDB.getSetting('shouldRestore', function (restoreSetting) {
             shouldRestore = restoreSetting.state;
         });
-    }, 200);
+    });
 }
 
 
@@ -464,6 +465,37 @@ document.addEventListener("click", async (e) => {
     } 
     else if (e.target.id == "settings-button") {
         openSettings();
+    } 
+    else if (e.target.id == "sort-button") {
+        const sortButton = document.getElementById('sort-button');
+        const sortSection = document.getElementById('sort-section');
+
+        sortButton.classList.toggle('rotate-sort');
+        sortSection.classList.toggle('show-sort-section');
+    }
+    else if (e.target.id == "time-recent") {
+        extDB.setSetting('sortMode', TIME_DEC, function () {
+            sortMode = TIME_DEC;
+            populateSessions();
+        });
+    }
+    else if (e.target.id == "time-old") {
+        extDB.setSetting('sortMode', TIME_INC, function () {
+            sortMode = TIME_INC;
+            populateSessions();
+        });
+    }
+    else if (e.target.id == "alpha-a") {
+        extDB.setSetting('sortMode', ALPHA_INC, function () {
+            sortMode = ALPHA_INC;
+            populateSessions();
+        });
+    }
+    else if (e.target.id == "alpha-z") {
+        extDB.setSetting('sortMode', ALPHA_DEC, function () {
+            sortMode = ALPHA_DEC;
+            populateSessions();
+        });
     }
 
     e.preventDefault();

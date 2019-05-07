@@ -4,28 +4,36 @@ html, body {
     max-height: 500px;
 }
 
-/*
- ******* Menu area *******
- */
+/* ********************************************************
+ * Menu area
+ * ********************************************************
+*/
 .name-menu-div {
   position: relative;
   left: 0px;
   top: 0px;
 }
-.menu-button {
-  position: absolute;
-  transition: background-color 0.3s;
+
+.popup-button {
   background-color: rgb(202, 202, 202);
   border: none;
   border-radius: 50%;
   width: 30px;
   height: 30px;
   margin: auto;
+  transition: transform 0.3s;
+  transition: background-color 0.3s;
 }
-.menu-button:hover {
+.popup-button:hover {
   background-color: rgb(235, 235, 235);
 }
 
+.sort-button {
+  position: absolute;
+}
+.rotate-sort {
+  transform: rotateZ(90deg);
+}
 .popup-header {
   position: relative;
   left: 40px;
@@ -33,9 +41,10 @@ html, body {
   margin: auto;
 }
 
-/*
- ******* Search area *******
- */
+/* ********************************************************
+ * Search area
+ * ********************************************************
+*/
 .search-div {
   position: absolute;
   right: 0px;
@@ -58,33 +67,11 @@ html, body {
 .search-button {
   position: absolute;
   right: 50px;
-  transition: background-color 0.3s;
-  background-color: rgb(202, 202, 202);
-  border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-}
-.search-button:hover {
-  background-color: rgb(235, 235, 235);
 }
 
-/*
- ******* Settings button *******
- */
 .settings-button {
   position: absolute;
   right: 15px;
-  transition: background-color 0.3s;
-  background-color: rgb(202, 202, 202);
-  border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  margin: auto;
-}
-.settings-button:hover {
-  background-color: rgb(235, 235, 235);
 }
 
 .settings-image {
@@ -93,9 +80,56 @@ html, body {
   top: 1px;
 }
 
-/*
- ******* Sessions List *******
- */
+/* ********************************************************
+ * Expandable sorting options section
+ * ********************************************************
+*/
+.sort-section {
+  display: none;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  z-index: 2;
+  width: 100%;
+  height: 50px;
+  background-color: rgb(202, 202, 202);
+}
+.show-sort-section {
+  display: block;
+  box-shadow: 1px 8px 10px -5px rgb(165, 165, 165);
+}
+.sort-title {
+  color: white;
+  position: relative;
+  top: 13px;
+  left: 10px;
+  font-weight: 500;
+  font-size: 17px;
+}
+.time-recent {
+  position: absolute;
+  top: 10px;
+  left: 90px;
+}
+.time-old {
+  position: absolute;
+  top: 10px;
+  left: 150px;
+}
+.alpha-a {
+  position: absolute;
+  top: 10px;
+  left: 210px;
+}
+.alpha-z {
+  position: absolute;
+  top: 10px;
+  left: 270px;
+}
+/* ********************************************************
+ * Sessions List
+ * ********************************************************
+*/
 .sessions-list {
   padding-left: 5px;
   overflow: scroll;
@@ -384,6 +418,7 @@ html, body {
 
 .panel-section {
   box-shadow: 1px 8px 10px -5px rgb(165, 165, 165);
+  border-bottom: none !important;
 }
 
 .panel-section-header {
