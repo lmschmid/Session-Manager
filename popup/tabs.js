@@ -77,6 +77,7 @@ function createOptionsMenu(sessionName, session) {
     let openInCurrentLink = document.createElement('a');
     let replaceCurrentLink = document.createElement('a');
     let replaceWithCurrentLink = document.createElement('a');
+    let addCurrentLink = document.createElement('a');
 
     openInCurrentLink.textContent = "Add to current window";
     openInCurrentLink.setAttribute('href', "#");
@@ -90,11 +91,16 @@ function createOptionsMenu(sessionName, session) {
     replaceWithCurrentLink.setAttribute('href', "#");
     replaceWithCurrentLink.addEventListener("click", replaceSession.bind(null, sessionName));
 
+    addCurrentLink.textContent = "Add current window to session";
+    addCurrentLink.setAttribute('href', "#");
+    addCurrentLink.addEventListener("click", addWindowToSession.bind(null, sessionName));
+
     options.className = "options-menu";
     optionsContent.className = "options-content";
     optionsContent.appendChild(openInCurrentLink);
     optionsContent.appendChild(replaceCurrentLink);
     optionsContent.appendChild(replaceWithCurrentLink);
+    optionsContent.appendChild(addCurrentLink);
     options.appendChild(optionsContent)
 
     return options;
@@ -268,7 +274,53 @@ function populateSessions() {
     });
 }
 
+// Need to fix time comparisons
 function compareSessions(sortMode, leftSess, rightSess) {
+    function compareDates(leftDate, rightDate) {
+        var leftParts = leftDate.split(" ");
+        var rightParts = rightDate.split(" ");
+
+        var leftDay = leftParts[0].split("/");
+        var rightDay = rightParts[0].split("/");
+
+        // First check year, month, day
+        if (parseInt(leftDay[2]) > parseInt(rightDay[2])) {
+            return 1;
+        } else if (parseInt(leftDay[2]) < parseInt(rightDay[2])) {
+            return -1;
+        } else if (parseInt(leftDay[0]) > parseInt(rightDay[0])) {
+            return 1;
+        } else if (parseInt(leftDay[0]) < parseInt(rightDay[0])) {
+            return -1;
+        } else if (parseInt(leftDay[1]) > parseInt(rightDay[1])) {
+            return 1;
+        } else if (parseInt(leftDay[1]) < parseInt(rightDay[1])) {
+            return -1;
+        }
+
+        // then check AM vs PM
+        if (leftParts[2] === "AM" && rightParts[2] === "PM") {
+            return -1;
+        } else if (leftParts[2] === "PM" && rightParts[2] === "AM") {
+            return 1;
+        }
+
+        var leftTime = leftParts[1].split(":");
+        var rightTime = rightParts[1].split(":");
+
+        // then check time of day
+        for (var timeIndex in leftTime) {
+            if (parseInt(leftTime[timeIndex]) > parseInt(rightTime[timeIndex])) {
+                return 1;
+            } else if (parseInt(leftTime[timeIndex]) < parseInt(rightTime[timeIndex])) {
+                return -1;
+            }
+        }
+        
+        return 0;
+    }
+
+
     if (sortMode === ALPHA_INC) {
         return leftSess.title.toLowerCase().localeCompare(
                rightSess.title.toLowerCase());
@@ -276,11 +328,9 @@ function compareSessions(sortMode, leftSess, rightSess) {
         return rightSess.title.toLowerCase().localeCompare(
                leftSess.title.toLowerCase());
     } else if (sortMode === TIME_INC) {
-        return leftSess.data.createDate.toLowerCase().localeCompare(
-               rightSess.data.createDate.toLowerCase());
+        return compareDates(leftSess.data.createDate, rightSess.data.createDate);
     } else if (sortMode === TIME_DEC) {
-        return rightSess.data.createDate.toLowerCase().localeCompare(
-               leftSess.data.createDate.toLowerCase());
+        return compareDates(rightSess.data.createDate, leftSess.data.createDate);
     }
 }
 
@@ -290,11 +340,18 @@ function replaceSession(sessionName) {
     });
 }
 
+function addWindowToSession(sessionName) {
+    getCurrentSession().then((sessionData) => {
+        var tabData = sessionData.tabs;
+        extDB.addTabToSession(sessionName, tabData, populateSessions);
+    });
+}
+
 function addTab(sessionName) {
     getCurrentWindowTabs().then((tabs) => {
         for (var tab of tabs) {
             if (!(tab.url.includes("about:", 0)) && tab.active) {
-                let tabData = {url:tab.url, title:tab.title, icon:tab.favIconUrl};
+                let tabData = [{url:tab.url, title:tab.title, icon:tab.favIconUrl}];
                 extDB.addTabToSession(sessionName, tabData, populateSessions);
                 break;
             }
@@ -302,7 +359,6 @@ function addTab(sessionName) {
     });
 }
 
-// TODO: change all these to interact with indexedDB
 function deleteTab(sessionName, tab) {
     extDB.deleteTabFromSession(sessionName, tab, populateSessions);
 }
@@ -314,6 +370,7 @@ function deleteSession(sessionName) {
 function openSession(session) {
     let rawURLs = [];
     var createData;
+
 
     for (var tab of session.tabs) {
         rawURLs.push(tab.url);
@@ -329,6 +386,7 @@ function openSession(session) {
             url: rawURLs
         };
     }
+
 
     var sending = browser.runtime.sendMessage({
         openSession: {
@@ -359,8 +417,8 @@ function openSessionInCurrent(tabs) {
 
 function replaceCurrentWindow(session) {
     browser.windows.getCurrent().then((window) => {
-        browser.windows.remove(window.id);
         openSession(session);
+        browser.windows.remove(window.id);
     });
 }
 

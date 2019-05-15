@@ -170,7 +170,7 @@ var addTabToSession = function(title, addTab, callback) {
     getRequest.onsuccess = function(e) {
         var session = getRequest.result;
 
-        session.data.tabs.push(addTab);
+        session.data.tabs = session.data.tabs.concat(addTab);
 
         extDB.createSession(title, session.data, callback);
     }

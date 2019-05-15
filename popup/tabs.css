@@ -2,6 +2,7 @@ html, body {
     width: 350px;
     min-height: 500px;
     max-height: 500px;
+    overflow-x: hidden;
 }
 
 /* ********************************************************
@@ -21,7 +22,6 @@ html, body {
   width: 30px;
   height: 30px;
   margin: auto;
-  transition: transform 0.3s;
   transition: background-color 0.3s;
 }
 .popup-button:hover {
@@ -132,7 +132,7 @@ html, body {
 */
 .sessions-list {
   padding-left: 5px;
-  overflow: scroll;
+  overflow-y: scroll;
   height: 400px;
   z-index: 1;
 }
@@ -141,8 +141,9 @@ html, body {
   display: block;
 }
 
-/*
- ******* Card *******
+/* ********************************************************
+ * Card 
+ * ********************************************************
  */
  .card {
   /* Add shadows to create the "card" effect */
@@ -257,7 +258,7 @@ html, body {
   position: absolute;
   left: 7px;
   background-color: #f1f1f1;
-  min-width: 103px;
+  min-width: 190px;
   height: auto;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 10;
@@ -268,9 +269,8 @@ html, body {
   color: black;
   padding: 2px 2px;
   text-decoration: none;
-  font-size: 9px;
+  font-size: 10px;
   display: block;
-  transition: font-size .1s;
   z-index: 3;
 }
 
@@ -280,7 +280,7 @@ html, body {
 }
 
 /* Change color of dropdown links on hover */
-.options-content a:hover {background-color: #ddd; font-size: 12px;}
+.options-content a:hover {background-color: #ddd}
 
 /* Show the dropdown menu on hover */
 .options-menu:hover .options-content {display: block;}
