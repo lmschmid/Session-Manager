@@ -380,7 +380,7 @@ function openSession(session) {
         createData = session["windowSettings"];
         createData["url"] = rawURLs;
         // bizzare error where any width >= 1270 loads as previous valid width
-        createData["width"] = (createData["width"] >= 1270 ? 1269 : createData["width"]);
+        // createData["width"] = (createData["width"] >= 1270 ? 1269 : createData["width"]);
     } else {
         createData = {
             url: rawURLs
@@ -493,8 +493,33 @@ function openDatabaseAndPopulate() {
 
 
 document.addEventListener("DOMContentLoaded", openDatabaseAndPopulate);
-document.addEventListener("click", async (e) => {
 
+document.addEventListener('keyup', function (event) {
+    if (event.defaultPrevented) {
+        return;
+    }
+
+    var key = event.key || event.keyCode; // Graceful degradation
+
+    if (key == 'Enter') {
+        let nameInput = document.getElementById('name-input');
+        let sessionName = nameInput.value;
+        if (document.activeElement != nameInput || sessionName === "") {
+            console.log("Input not focused or empty name, not saving");
+        }
+        else {
+            document.getElementById('name-input').value = '';
+                getCurrentSession().then((sessionData) => {
+                    console.log("Saving session "+sessionName);
+                    console.log(sessionData);
+                    extDB.createSession(sessionName, sessionData, populateSessions);
+                });
+        }
+    }
+
+});
+
+document.addEventListener("click", async (e) => {
     if (e.target.id === "save-button") {
         let sessionName = document.getElementById('name-input').value;
         if (sessionName === "") {

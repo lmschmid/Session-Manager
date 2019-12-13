@@ -1,5 +1,5 @@
 export { fetchSessions, clearSessions, createSession, fetchSessions,
-         deleteSession, deleteTabFromSession, addTabToSession, };
+         deleteSession, deleteTabFromSession, addTabToSession };
 
 var fetchSessions = function(callback) {
     var db = this.datastore;
