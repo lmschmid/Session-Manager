@@ -134,6 +134,7 @@ html, body {
   overflow-y: scroll;
   height: 400px;
   z-index: 1;
+  scrollbar-width: none;
 }
 
 .sessions-list a {
@@ -297,6 +298,7 @@ html, body {
   white-space: nowrap;
   overflow-x: hidden;
   overflow-y: scroll;
+  scrollbar-width: none;
 }
 
 .link-elem {
