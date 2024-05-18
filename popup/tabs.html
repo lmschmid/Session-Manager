@@ -11,7 +11,7 @@
     <div class="panel-section panel-section-header">
       <div class="name-menu-div">
         <input class="sort-button popup-button" id="sort-button" type="image" src="/icons/arrow-mat.png">
-        <div class="popup-header">ProTabs</div>
+        <div class="popup-header" id="popup-header">ProTabs</div>
       </div>
       <div class="search-div" id="search-div">
         <input class="search-bar" id="search-bar" type="text" placeholder="Search...">
@@ -28,9 +28,11 @@
     </div>
   </div>
 
-  <div class="sessions-list" id="sessions-list"></div>
+  <div class="sessions-list" id="sessions-list">
+    <div class ="card" id="card"></div>
+  </div>
 
-  <div class="save-session">
+  <div class="save-session" id = "save-session">
     <div class="panel-section-separator"></div>
     <input class="name-input" id="name-input" type="text" value="" />
     <button class="save-button" id="save-button" type="submit" value="Submit" >Save</button>

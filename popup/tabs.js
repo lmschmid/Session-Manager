@@ -124,6 +124,11 @@ function createInfoSection (sessionName, session) {
     nameField.textContent = sessionName;
     nameContainer.appendChild(nameField);
 
+    // Add listener for each card to open the detail view
+    nameField.addEventListener('click', function() {
+        showCardDetail(sessionName, session);
+    });
+
     dateContainer.className = "date-container";
     dateField.className = "date-field";
     dateField.textContent = session["createDate"];
@@ -437,6 +442,20 @@ function getCurrentTabs() {
     });
 }
 
+function filterSessionDetail(filterString) {
+    let cardDetail = document.getElementById('card-details');
+    let tabs = cardDetail.childNodes;
+
+    for (var tab of tabs) {
+        if (!tab.innerText.toLowerCase().includes(
+            filterString.toLowerCase())) {
+            tab.style.display = 'none';
+        } else {
+            tab.style.display = 'block';
+        }
+    }
+}
+
 function filterSessions(filterString) {
     console.log("Filtering by: "+filterString);
     let sessionsList = document.getElementById('sessions-list');
@@ -472,11 +491,21 @@ function getCurrentSession() {
 
 let searchBar = document.getElementById('search-bar');
 searchBar.addEventListener('input', async (e) => {
+    const sessionsList = document.getElementById('sessions-list');
+    
     let filterString = searchBar.value;
-    filterSessions(filterString);
+    if (sessionsList.getAttribute('pageStyle') === 'detail') {
+        console.log(document.getElementById('card-details').style.display)
+        filterSessionDetail(filterString);
+    } else {
+        filterSessions(filterString);
+    }
 });
 
 function openDatabaseAndPopulate() {
+    const sessionsList = document.getElementById('sessions-list');
+    sessionsList.setAttribute('pageStyle', 'list');
+
     extDB.open(function () {
         extDB.getSetting('sortMode', function (sortSetting) {
             sortMode = sortSetting.state;
@@ -491,8 +520,103 @@ function openDatabaseAndPopulate() {
     });
 }
 
+function constructTabLink(tab) {
+    let tabLink = document.createElement('li');
+    let urlField = document.createElement('span');
+    let icon = document.createElement('img');
+    let deleteWrapper = document.createElement('div');
+    let deleteButton = document.createElement('button');
 
-document.addEventListener("DOMContentLoaded", openDatabaseAndPopulate);
+    tabLink.className = 'detail-link-elem';
+
+    urlField.className = "detail-link-title";
+    urlField.textContent = tab.title;
+    urlField.addEventListener("click", openTab.bind(null, tab.url));
+
+    if (tab.icon) {
+        let iconUrl = tab.icon;
+        tabLink.style.listStyleType = 'none';
+
+        urlField.style.left = '-4px';
+
+        icon.className = "detail-link-icon";
+        icon.src = iconUrl;
+        tabLink.appendChild(icon);
+    }
+
+    tabLink.appendChild(urlField);
+
+    return tabLink;
+}
+
+function showCardDetail(sessionName, session) {
+    const saveSection = document.getElementById('save-session');
+    const sessionsList = document.getElementById('sessions-list');
+    const sortButton = document.getElementById('sort-button');
+    const popupHeader = document.getElementById('popup-header');
+    var cardDetail;
+
+    sessionsList.setAttribute('pageStyle', 'detail')
+
+    // Create cardDetail html elements, or delete children
+    if (document.getElementById('card-details')) {
+        cardDetail = document.getElementById('card-details');
+        cardDetail.replaceChildren();
+    } else {
+        cardDetail = document.createElement('div');
+        cardDetail.className = 'card-details';
+        cardDetail.id = 'card-details';    
+    }
+    cardDetail.setAttribute('scroll-value', sessionsList.scrollTop);
+
+    // TODO add sessionName title div
+    for (var tab of session.tabs) {
+        let tabLink = constructTabLink(tab);
+        cardDetail.appendChild(tabLink);
+    }
+    sessionsList.appendChild(cardDetail);
+
+
+    // Hide the list of cards
+    saveSection.style.display = 'none';
+    document.querySelectorAll('.card').forEach(card => {
+        card.style.display = 'none';
+    })
+
+    // Enable the display of the cardDetail created earlier
+    cardDetail.style.display = 'block';
+    // Reverse the icon to make it look like "back button"
+    sortButton.classList.toggle('rotate-back');
+    popupHeader.innerHTML = sessionName;
+    sessionsList.scrollTop = 0;
+}
+
+function hideCardDetail() {
+    const sessionsList = document.getElementById('sessions-list');
+    const saveSection = document.getElementById('save-session');
+    const sortButton = document.getElementById('sort-button');
+    const popupHeader = document.getElementById('popup-header');
+
+    const cardDetail = document.getElementById('card-details');
+
+    sessionsList.setAttribute('pageStyle', 'list');
+
+    cardDetail.style.display = 'none';
+
+    document.querySelectorAll('.card').forEach(card => {
+        card.style.display = 'block';
+    })
+    sessionsList.style.display = 'block';
+    saveSection.style.display = 'inline-block';
+    sortButton.classList.toggle('rotate-back');
+    popupHeader.innerHTML = "ProTabs";
+    sessionsList.scrollTo(0, cardDetail.getAttribute('scroll-value'));
+}
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    openDatabaseAndPopulate();
+});
 
 document.addEventListener('keyup', function (event) {
     if (event.defaultPrevented) {
@@ -535,26 +659,34 @@ document.addEventListener("click", async (e) => {
         }
     } 
     else if (e.target.id === 'search-button') {
+        console.log(`Clicked on search bar ${e.target.id}`);
+
         const searchBar = document.getElementById('search-bar');
         if (searchBar.style.width === '210px') {
             searchBar.style.width = '0px';
-            setTimeout(function() {filterSessions("");searchBar.style.backgroundColor = 'rgb(202, 202, 202)';searchBar.value = "";}, 390);
+            setTimeout(function() {searchBar.style.backgroundColor = 'rgb(202, 202, 202)';searchBar.style.display = 'none';}, 390);
         } else {
+            searchBar.style.display = 'block';
             searchBar.style.width = '210px';
             searchBar.style.backgroundColor = 'rgb(235, 235, 235)';
             searchBar.focus();
             searchBar.select();
         }
     } 
-    else if (e.target.id == "settings-button") {
+    else if (e.target.id === "settings-button") {
         openSettings();
     } 
-    else if (e.target.id == "sort-button") {
+    else if (e.target.id === "sort-button") {
         const sortButton = document.getElementById('sort-button');
         const sortSection = document.getElementById('sort-section');
+        const sessionsList = document.getElementById('sessions-list');
 
-        sortButton.classList.toggle('rotate-sort');
-        sortSection.classList.toggle('show-sort-section');
+        if (sessionsList.getAttribute('pageStyle') === 'detail') {
+            hideCardDetail();
+        } else {
+            sortButton.classList.toggle('rotate-sort');
+            sortSection.classList.toggle('show-sort-section');    
+        }
     }
     else if (e.target.id == "time-recent") {
         extDB.setSetting('sortMode', TIME_DEC, function () {
@@ -579,6 +711,9 @@ document.addEventListener("click", async (e) => {
             sortMode = ALPHA_DEC;
             populateSessions();
         });
+    }
+    else {
+        console.log(`Clicked on unsupported element ${e.target.id}`);
     }
 
     e.preventDefault();

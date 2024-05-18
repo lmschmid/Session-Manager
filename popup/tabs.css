@@ -34,6 +34,10 @@ html, body {
 .rotate-sort {
   transform: rotateZ(90deg);
 }
+.rotate-back {
+  transform: rotateZ(180deg);
+}
+
 .popup-header {
   position: relative;
   left: 40px;
@@ -140,6 +144,47 @@ html, body {
 .sessions-list a {
   display: block;
 }
+
+/* ********************************************************
+ * Card Detail View
+ * ********************************************************
+ */
+ .card-details {
+  display: block;
+  position: relative;
+  width: 100%;
+  white-space: nowrap;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+ }
+
+ /* Tab link styles */
+.detail-link-elem {
+  margin-top: 30px;
+  width: 100%;
+  position: relative;
+}
+
+.detail-link-icon {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  margin-right: 15px;
+}
+
+.detail-link-title {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  font-size: 17px;
+  text-overflow: ellipsis;
+}
+.detail-link-title:hover {
+  border-bottom: .5px solid black;
+  cursor: pointer;
+}
+
 
 /* ********************************************************
  * Card 
