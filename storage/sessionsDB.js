@@ -1,4 +1,4 @@
-export { fetchSessions, clearSessions, createSession, fetchSessions,
+export { fetchSessions, clearSessions, createSession ,
          deleteSession, deleteTabFromSession, addTabToSession };
 
 var fetchSessions = function(callback) {
